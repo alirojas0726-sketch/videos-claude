@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quiz de Trigonometría - Grado 10</title>
+<style>
+  :root { --bg:#f3f6fb; --card:#fff; --text:#1f2937; --accent:#2563eb; --ok:#16a34a; --bad:#dc2626; --muted:#6b7280; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif; background:var(--bg); color:var(--text); display:flex; justify-content:center; padding:16px; }
+  .card { background:var(--card); max-width:600px; width:100%; border-radius:16px; padding:24px; box-shadow:0 4px 20px rgba(0,0,0,.08); }
+  h1 { margin:0 0 4px; font-size:1.4rem; }
+  .sub { color:var(--muted); margin-bottom:16px; font-size:.9rem; }
+  .bar { height:8px; background:#e5e7eb; border-radius:99px; overflow:hidden; margin-bottom:16px; }
+  .bar > div { height:100%; width:0; background:var(--accent); transition:width .3s; }
+  .q { font-size:1.15rem; font-weight:600; margin-bottom:14px; }
+  .opt { display:block; width:100%; text-align:left; padding:12px 14px; margin-bottom:10px; border:2px solid #e5e7eb; background:#fff; border-radius:10px; font-size:1rem; cursor:pointer; color:inherit; }
+  .opt:hover:not(:disabled) { border-color:var(--accent); }
+  .opt.ok { border-color:var(--ok); background:#dcfce7; }
+  .opt.bad { border-color:var(--bad); background:#fee2e2; }
+  .fb { margin:10px 0; padding:10px 12px; border-radius:8px; background:#eff6ff; font-size:.95rem; display:none; }
+  .btn { background:var(--accent); color:#fff; border:0; padding:12px 22px; border-radius:10px; font-size:1rem; cursor:pointer; }
+  .btn:disabled { opacity:.4; cursor:default; }
+  .score { font-size:2.4rem; font-weight:700; color:var(--accent); text-align:center; margin:10px 0; }
+  .center { text-align:center; }
+</style>
+</head>
+<body>
+<div class="card" id="app"></div>
+<script>
+const preguntas = [
+  { q: "¿Cuál es el valor de sen(30°)?", o: ["1/2", "√3/2", "√2/2", "1"], a: 0,
+    e: "sen(30°) = 1/2, uno de los ángulos notables." },
+  { q: "En un triángulo rectángulo, el coseno de un ángulo agudo es:", o: ["cateto opuesto / hipotenusa", "cateto adyacente / hipotenusa", "cateto opuesto / cateto adyacente", "hipotenusa / cateto adyacente"], a: 1,
+    e: "cos θ = cateto adyacente / hipotenusa." },
+  { q: "Si un cateto opuesto mide 3 y el adyacente mide 4, ¿cuánto vale tan θ?", o: ["4/3", "3/5", "3/4", "5/4"], a: 2,
+    e: "tan θ = opuesto / adyacente = 3/4." },
+  { q: "¿Cuál identidad pitagórica es correcta?", o: ["sen θ + cos θ = 1", "sen²θ + cos²θ = 1", "sen²θ − cos²θ = 1", "tan θ + 1 = sec θ"], a: 1,
+    e: "La identidad fundamental es sen²θ + cos²θ = 1." },
+  { q: "¿A cuántos radianes equivalen 180°?", o: ["π/2", "π", "2π", "π/4"], a: 1,
+    e: "180° = π rad, porque una vuelta completa (360°) son 2π rad." }
+];
+
+const app = document.getElementById("app");
+let i = 0, puntos = 0, respondida = false;
+
+function mostrar() {
+  const p = preguntas[i];
+  respondida = false;
+  app.innerHTML = `
+    <h1>Quiz de Trigonometría</h1>
+    <div class="sub">Grado 10 · Pregunta ${i + 1} de ${preguntas.length}</div>
+    <div class="bar"><div style="width:${(i / preguntas.length) * 100}%"></div></div>
+    <div class="q">${p.q}</div>
+    ${p.o.map((t, k) => `<button class="opt" data-k="${k}">${t}</button>`).join("")}
+    <div class="fb" id="fb"></div>
+    <button class="btn" id="next" disabled>${i === preguntas.length - 1 ? "Ver resultado" : "Siguiente"}</button>`;
+  app.querySelectorAll(".opt").forEach(b => b.onclick = () => responder(+b.dataset.k));
+  document.getElementById("next").onclick = () => { i++; i < preguntas.length ? mostrar() : final(); };
+}
+
+function responder(k) {
+  if (respondida) return;
+  respondida = true;
+  const p = preguntas[i];
+  const btns = app.querySelectorAll(".opt");
+  btns.forEach((b, j) => {
+    b.disabled = true;
+    if (j === p.a) b.classList.add("ok");
+    else if (j === k) b.classList.add("bad");
+  });
+  if (k === p.a) puntos++;
+  const fb = document.getElementById("fb");
+  fb.style.display = "block";
+  fb.textContent = (k === p.a ? "¡Correcto! " : "Incorrecto. ") + p.e;
+  document.getElementById("next").disabled = false;
+}
+
+function final() {
+  const msg = puntos === 5 ? "¡Excelente trabajo!" : puntos >= 3 ? "¡Buen trabajo! Sigue practicando." : "Repasa los conceptos e inténtalo de nuevo.";
+  app.innerHTML = `
+    <h1 class="center">Resultado</h1>
+    <div class="score">${puntos} / ${preguntas.length}</div>
+    <p class="center">${msg}</p>
+    <div class="center"><button class="btn" id="re">Reintentar</button></div>`;
+  document.getElementById("re").onclick = () => { i = 0; puntos = 0; mostrar(); };
+}
+
+mostrar();
+</script>
+</body>
+</html>
