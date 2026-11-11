@@ -854,7 +854,7 @@ async function conectar(reanudar){
     // El pase lo entrega la taquilla del profe después de revisar el código
     let tk;
     try {
-      const resp = await fetch(TAQUILLA, { method:"POST", headers:{"Content-Type":"text/plain;charset=utf-8"}, body:JSON.stringify({ codigo, clase:"pitagoras", velocidad:vel }) });
+      const resp = await fetch(TAQUILLA, { method:"POST", headers:{"Content-Type":"text/plain;charset=utf-8"}, body:JSON.stringify({ codigo, clase:"pitagoras", velocidad:vel, voz:new URLSearchParams(location.search).get("voz") || "natural" }) });
       tk = await resp.json();
     } catch (e) { throw new Error("no hay conexión con la taquilla de la clase. Revisa el internet e intenta de nuevo."); }
     if (!tk || !tk.ok || !tk.session_token){ const er = new Error(tk && tk.mensaje || "no se pudo validar el código."); er.codigo = true; throw er; }
