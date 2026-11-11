@@ -91,6 +91,7 @@ html,body{height:100%;overflow:hidden}
 .codigo{display:grid;gap:4px;font-weight:700;font-size:.95rem}
 .codigo input{font:inherit;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:9px 11px;border:2px solid var(--azul);border-radius:8px;background:var(--panel);color:var(--fg);width:100%}
 .solo-profe{display:none!important}
+#config,#ensayo,#cobro{display:none!important} /* el estudiante no ve configuración, ensayo ni créditos */
 </style>
 </head>
 <body>
@@ -114,7 +115,7 @@ html,body{height:100%;overflow:hidden}
       <div class="copia" id="copia" hidden>
         <b>✍ Copien en el cuaderno</b>
         <span class="espera" id="copiaTxt">El profe pasa a la siguiente lámina cuando todos terminen.</span>
-        <button class="btn" id="pausaCopia">⏸ Pausar mientras copian (no cobra)</button>
+        <button class="btn" id="pausaCopia">⏸ Pausar mientras copio</button>
         <button class="btn go" id="seguirYa">Siguiente lámina ▶</button>
       </div>
       <div class="duda" id="duda" hidden>
@@ -130,7 +131,7 @@ html,body{height:100%;overflow:hidden}
     <aside class="lado">
       <div class="marco">
         <video id="video" autoplay playsinline></video>
-        <div class="aviso-marco" id="avisoMarco">El profe Alirio virtual aparece aquí cuando toque «Empezar clase».</div>
+        <div class="aviso-marco" id="avisoMarco">El profe Alirio virtual aparece aquí cuando toques «Empezar clase».</div>
       </div>
       <label class="codigo" for="codigo">Tu código de acceso
         <input id="codigo" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="Ejemplo: LUIS-4821" maxlength="20"></label>
@@ -147,7 +148,7 @@ html,body{height:100%;overflow:hidden}
       <div class="fila">
         <button class="btn stop" id="detener" disabled title="Tecla D">⏹ Detener</button>
         <button class="btn go" id="reiniciar" disabled title="Tecla R">▶ Reiniciar</button>
-        <button class="btn" id="mic" disabled>✋ Pregunta (tecla P)</button>
+        <button class="btn" id="mic" disabled>✋ Pregunta</button>
       </div>
       <div class="subt" aria-live="polite" hidden><span>Dice el profe virtual</span><div id="subt">Aquí aparece lo que va diciendo.</div></div>
       <div class="estado" id="estado"></div>
@@ -559,7 +560,7 @@ function enviarAvatar(texto, intento){
   const listo = window.LA && sesion.state === window.LA.SessionState.CONNECTED;
   if (listo){ try { sesion.repeat(texto); if (intento > 0) estado(""); return; } catch (e) {} }
   if (intento < 40) setTimeout(() => enviarAvatar(texto, intento + 1), 500);
-  else estado("No se pudo enviar el texto al avatar. Toque Terminar y vuelva a Empezar.");
+  else estado("No se pudo enviar el texto al avatar. Toca Terminar y vuelve a Empezar.");
 }
 function finHabla(){
   if (fase !== "hablando") return;
@@ -574,7 +575,7 @@ function programarAutoPausa(){
   cancelarAutoPausa();
   if (modo !== "vivo" || !sesion || k < 1 || leer("auto_pausa", "1") !== "1") return;
   let quedan = segPreguntas();
-  const pinta = () => { if (fase === "copiando" && !preguntaAbierta) $("copiaTxt").textContent = (manual() ? "¿Preguntas? Toque ✋ Pregunta (tecla P). Si no, la clase se pausa sola en " : "¿Preguntas? Si nadie habla, la clase se pausa sola en ") + quedan + " s para copiar."; };
+  const pinta = () => { if (fase === "copiando" && !preguntaAbierta) $("copiaTxt").textContent = (manual() ? "¿Preguntas? Toca ✋ Pregunta. Si no, la clase se pausa sola en " : "¿Preguntas? Si nadie habla, la clase se pausa sola en ") + quedan + " s para copiar."; };
   pinta(); tAutoTxt = setInterval(() => { quedan = Math.max(0, quedan - 1); pinta(); }, 1000);
   tAutoPausa = setTimeout(() => {
     cancelarAutoPausa(); if (preguntaAbierta) return;
@@ -737,13 +738,13 @@ function detener(){
       try { s.stop(); } catch (e) {}
       clearInterval(tick); clearTimeout(tMic); avatarHablando = false; micPorAvatar = false; t0 = null;
       try { $("video").srcObject = null; } catch (e) {}
-      $("avisoMarco").textContent = "⏹ Clase detenida. El reloj está detenido y no se está cobrando."; $("avisoMarco").hidden = false;
+      $("avisoMarco").textContent = "⏹ Clase detenida. Toca ▶ Reiniciar para seguir."; $("avisoMarco").hidden = false;
       $("reloj").classList.remove("vivo"); $("cobro").hidden = true;
       $("terminar").disabled = true; $("mic").disabled = true; $("empezar").disabled = true;
       $("siguiente").disabled = k >= LAMINAS.length - 1; $("regresar").disabled = k <= 1;
     }
     pintarDetener();
-    estado("⏹ Detenido: reloj detenido, no se cobra. Toque ▶ Reiniciar para seguir (el profe tarda unos segundos en volver).");
+    estado("⏹ Clase detenida. Toca ▶ Reiniciar para seguir (el profe tarda unos segundos en volver).");
   }
 }
 let reanudarDetenido = false;
@@ -947,7 +948,7 @@ function reabrirTrasAvatar(){
   tMic = setTimeout(async () => { if (!sesion || !micPorAvatar) return; micPorAvatar = false; micActivo(!detenido); pintarMic(); }, 700);
 }
 function pintarMic(){
-  if (manual()){ $("mic").textContent = preguntaAbierta ? "🔴 Escuchando… (toque para cerrar)" : "✋ Pregunta (tecla P)"; $("mic").classList.toggle("go", preguntaAbierta); return; }
+  if (manual()){ $("mic").textContent = preguntaAbierta ? "🔴 Escuchando… (toca para cerrar)" : "✋ Pregunta"; $("mic").classList.toggle("go", preguntaAbierta); return; }
   $("mic").textContent = micAbierto ? "🎙 Micrófono abierto" : "🔇 Micrófono silenciado";
 }
 $("mic").onclick = async () => {
@@ -963,14 +964,14 @@ $("pausaCopia").onclick = async () => {
   try { await s.stop(); } catch (e) {}
   clearInterval(tick); clearTimeout(tHabla); clearTimeout(tMic); clearTimeout(tRep); repPend = null; avatarHablando = false; micPorAvatar = false; t0 = null;
   try { $("video").srcObject = null; } catch (e) {}
-  $("avisoMarco").textContent = "En pausa mientras copian. No se está cobrando."; $("avisoMarco").hidden = false;
+  $("avisoMarco").textContent = "En pausa para copiar. Cuando termines, toca Siguiente lámina."; $("avisoMarco").hidden = false;
   $("reloj").textContent = fmt(LIMITE); $("reloj").classList.remove("vivo"); $("cobro").hidden = true;
   $("terminar").disabled = true; $("mic").disabled = true; $("empezar").disabled = true;
   $("copia").hidden = false; $("pausaCopia").hidden = true;
-  $("copiaTxt").textContent = k >= LAMINAS.length - 1 ? "Clase terminada." : "En pausa: copien con calma. Cuando terminen, toque Siguiente lámina y el profe vuelve (tarda unos segundos).";
-  $("siguiente").disabled = k >= LAMINAS.length - 1; $("regresar").disabled = k <= 1; quitarDetenido(); $("detener").disabled = true; estado("Pausa: no se está cobrando.");
+  $("copiaTxt").textContent = k >= LAMINAS.length - 1 ? "Clase terminada." : "En pausa: copia con calma. Cuando termines, toca Siguiente lámina y el profe vuelve (tarda unos segundos).";
+  $("siguiente").disabled = k >= LAMINAS.length - 1; $("regresar").disabled = k <= 1; quitarDetenido(); $("detener").disabled = true; estado("En pausa para copiar.");
 };
-async function terminar(){ const s = sesion; sesion = null; try { if (s) await s.stop(); } catch (e) {} terminarUI("Sesión cerrada. Ya no se están gastando créditos."); }
+async function terminar(){ const s = sesion; sesion = null; try { if (s) await s.stop(); } catch (e) {} terminarUI("Clase terminada."); }
 function terminarUI(msg){
   cancelarAutoPausa(); enPausa = false; clearInterval(tick); clearTimeout(tHabla); clearTimeout(tMic); clearTimeout(tRep); repPend = null; avatarHablando = false; micPorAvatar = false; preguntaAbierta = false; clearTimeout(tPreg); t0 = null; sesion = null; modo = "reposo"; fase = "pausa";
   $("avisoMarco").textContent = msg; $("avisoMarco").hidden = false;
