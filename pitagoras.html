@@ -828,6 +828,10 @@ async function conectar(reanudar){
   const codigo = $("codigo").value.trim().toUpperCase();
   if (!codigo){ estado("Escribe tu código de acceso para empezar."); $("codigo").focus(); return; }
   guardarLS("codigo_acceso", codigo);
+  // Primero el micrófono: así no se gasta la clase ni se conecta el avatar si el permiso no está dado
+  estado("Permite el micrófono cuando el navegador lo pida…");
+  try { const m = await navigator.mediaDevices.getUserMedia({audio:true}); m.getAudioTracks().forEach(t => { t.enabled = false; }); }
+  catch (e) { estado("Para entrar a la clase debes permitir el micrófono. Toca el candado junto a la dirección de la página, permite el micrófono y vuelve a tocar Empezar clase."); return; }
   if (!window.LA){ estado("No cargó la librería de LiveAvatar. Revise el internet y recargue."); return; }
   clearTimeout(tHabla);
   reanudando = reanudar; enPausa = false;
