@@ -1,0 +1,505 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>body{margin:0}</style>
+</head>
+<body>
+<title>Derivadas de polinomios</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Nunito:wght@400;700;800&display=swap">
+<style>
+/* Layout: una columna; el tablero blanco con el mini profe arriba, debajo los controles y el texto de lo que explica. */
+:root{
+  --bg:#e7edf4; --panel:#ffffff; --fg:#1d2733; --muted:#5d6b7b; --line:#c9d3df;
+  --azul:#1f5fbf; --azul-fg:#ffffff; --rojo:#c62f2f; --verde:#1d8a4e;
+  --font-ui:"Nunito", system-ui, sans-serif; --font-mano:"Kalam", "Comic Sans MS", cursive;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#141a22; --panel:#1d2530; --fg:#e8edf3; --muted:#9fb0c2; --line:#334050;
+  --azul:#5b9bf0; --azul-fg:#0d1622; --rojo:#ef7070; --verde:#4cc287; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#141a22; --panel:#1d2530; --fg:#e8edf3; --muted:#9fb0c2; --line:#334050;
+  --azul:#5b9bf0; --azul-fg:#0d1622; --rojo:#ef7070; --verde:#4cc287; color-scheme:dark }
+body{background:var(--bg); color:var(--fg); font-family:var(--font-ui); font-size:16px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px)); padding-block:14px 28px}
+.wrap{max-width:1180px; margin:0 auto; display:grid; gap:12px}
+.cab{display:flex; align-items:baseline; justify-content:space-between; gap:12px; flex-wrap:wrap}
+.cab h1{margin:0; font-family:var(--font-mano); font-weight:700; font-size:clamp(1.3rem, 3.6vw, 1.9rem); text-wrap:balance}
+.derecha{display:flex; gap:14px; align-items:baseline; flex-wrap:wrap}
+.volver{color:var(--azul); font-weight:700; text-decoration:none}
+.volver:hover{text-decoration:underline}
+.pag{color:var(--muted); font-weight:700; font-variant-numeric:tabular-nums}
+.tablero{position:relative}
+#ink text{white-space:pre}
+.tablero svg{display:block; width:100%; height:auto; max-width:100%}
+.inicio{position:absolute; inset:0; display:grid; place-items:center; background:rgba(16,24,34,.35); border-radius:10px}
+.inicio[hidden]{display:none}
+.controles{display:flex; flex-wrap:wrap; gap:10px; align-items:center}
+.controles .esp{flex:1}
+.btn{font:inherit; font-weight:800; border-radius:10px; padding:10px 16px; cursor:pointer; border:1px solid var(--line); background:var(--panel); color:var(--fg)}
+.btn.go{background:var(--azul); color:var(--azul-fg); border-color:var(--azul)}
+.btn.grande{font-size:1.2rem; padding:14px 26px}
+.btn:disabled{opacity:.45; cursor:default}
+.btn:focus-visible{outline:3px solid var(--azul); outline-offset:2px}
+.btn[aria-pressed="true"]{border-color:var(--azul); color:var(--azul)}
+.dice{background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:12px 16px; line-height:1.55; max-width:none; min-width:0}
+.dice b{display:block; font-size:.8rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); margin-bottom:4px}
+.resp{display:flex; gap:10px; flex-wrap:wrap}
+[hidden]{display:none!important}
+.soloSalon{display:none}
+body.salon .soloSalon{display:inline-block}
+body.salon #repetir{display:none}
+body.salon .btn{padding:8px 12px}
+body.salon{padding-block:8px 12px}
+body.salon .wrap{max-width:none; gap:8px}
+body.salon .tablero svg{max-height:calc(100vh - 100px); width:auto; margin:0 auto}
+body.salon .inicio{border-radius:0}
+body.salon .girar{display:none}
+body.salon .dice{display:none}
+body.salon.texto .dice{display:block}
+body.salon .cab h1{font-size:1.2rem}
+body.salon .controles{justify-content:center}
+body.salon .controles .esp{display:none}
+:fullscreen body.salon .cab{display:none}
+
+.cajaVoz{display:flex; align-items:center; gap:6px; font-weight:700; color:var(--muted); min-width:0}
+.cajaVoz select{font:inherit; font-weight:400; max-width:220px; padding:8px; border-radius:8px; border:1px solid var(--line); background:var(--panel); color:var(--fg)}
+.dudas{background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:12px 16px; display:grid; gap:10px; min-width:0}
+.dudas-cab{display:flex; flex-wrap:wrap; gap:4px 12px; align-items:baseline}
+.dudas-cab span{color:var(--muted); font-size:.9rem}
+.lista{display:grid; grid-template-columns:repeat(auto-fill, minmax(260px, 1fr)); gap:8px}
+.lista button{font:inherit; text-align:left; line-height:1.35; padding:9px 12px; border-radius:8px; border:1px solid var(--line); background:var(--bg); color:var(--fg); cursor:pointer}
+.lista button[aria-pressed="true"]{border-color:var(--azul); color:var(--azul); font-weight:700}
+.lista button:focus-visible{outline:3px solid var(--azul); outline-offset:2px}
+.respDuda{border-left:4px solid var(--verde); padding:4px 0 4px 12px}
+.respDuda p{margin:.3em 0 0; line-height:1.55; font-size:1.05rem}
+.girar{display:none; font-size:.9rem; color:var(--muted); text-align:center}
+@media (max-width:600px) and (orientation:portrait){ .girar{display:block} }
+@media (max-width:560px){ .btn{padding:10px 12px} .controles .esp{display:none} }
+</style>
+
+<div class="wrap">
+  <div class="cab">
+    <h1>Derivadas de polinomios</h1>
+    <span class="derecha"><a class="volver" href="index.html">← Todas las clases</a><span class="pag" id="pag">Inicio</span></span>
+  </div>
+  <div class="tablero">
+    <svg id="svg" viewBox="0 0 1600 900" role="img" aria-label="Tablero de la clase con el mini profe Alirio">
+      <rect x="20" y="20" width="1560" height="860" rx="14" fill="#8a96a3"/>
+      <rect x="34" y="34" width="1532" height="832" rx="8" fill="#fbfcfd"/>
+      <text id="titulo" x="80" y="108" font-family="Kalam, cursive" font-weight="700" font-size="50" fill="#1d2733">Derivadas de polinomios</text>
+      <line id="subraya" x1="80" y1="126" x2="760" y2="126" stroke="#1f5fbf" stroke-width="4" stroke-linecap="round"/>
+      <g id="ink"></g>
+      <g id="profe"></g>
+      <rect x="20" y="866" width="1560" height="14" rx="4" fill="#6e7a87"/>
+    </svg>
+    <div class="inicio" id="inicio"><button class="btn go grande" id="empezar">▶ Empezar la clase</button></div>
+  </div>
+  <div class="girar">📱 Gira el celular para ver el tablero más grande.</div>
+  <div class="controles">
+    <button class="btn" id="anterior" disabled>◀ Anterior</button>
+    <button class="btn go" id="siguiente" disabled>Siguiente ▶</button>
+    <span class="esp"></span>
+    <button class="btn" id="voz" aria-pressed="true">🔊 Voz activada</button>
+    <label class="cajaVoz" id="cajaVoz" hidden>Voz <select id="elegirVoz"></select></label>
+    <button class="btn" id="repetir" disabled>↻ Escuchar otra vez</button>
+    <button class="btn soloSalon" id="detener">⏹ Detener</button>
+    <button class="btn soloSalon" id="repetirLam">↺ Repetir lámina</button>
+    <button class="btn soloSalon" id="verTexto" aria-pressed="false">📝 Texto</button>
+    <button class="btn soloSalon" id="completa">⛶ Pantalla completa</button>
+    <button class="btn" id="abrirDudas" aria-expanded="false" aria-controls="panelDudas">✋ Tengo una duda</button>
+  </div>
+  <section class="dudas" id="panelDudas" hidden aria-label="Dudas frecuentes">
+    <div class="dudas-cab"><b>Dudas frecuentes</b><span>Toca tu duda y el profe te responde.</span></div>
+    <div class="lista" id="listaDudas"></div>
+    <div class="respDuda" id="respDuda" hidden><b id="respPreg"></b><p id="respTxt"></p></div>
+  </section>
+  <div class="resp" id="cajaResp" hidden><button class="btn go" id="verResp">👀 Ver la respuesta</button></div>
+  <div class="dice" id="dice" aria-live="polite"><b>Explicación</b><span id="texto">Toca «Empezar la clase». Ten a la mano el cuaderno.</span></div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const BLUE="#1f5fbf", GREEN="#1d8a4e", RED="#c62f2f", DARK="#1d2733", GREY="#6b7785", ORANGE="#c36a12";
+const F_AZ="rgba(31,95,191,.14)", F_VE="rgba(29,138,78,.16)", F_NA="rgba(214,130,30,.18)", F_RO="rgba(198,47,47,.10)";
+/* Piezas comunes de las láminas: texto, trazo, ecuación con fracción y plano cartesiano */
+const T = (text, x, y, size, color) => ({text, x, y, size, color:color || DARK});
+const PA = (path, color, w, fill) => ({path, color, w, fill});
+const EQ = (eq, x, y, size, color) => ({eq, x, y, size, color:color || DARK});
+const menos = n => String(n).replace("-", "−");
+/* Plano: o = {ox, oy, u, x0, x1, y0, y1}. Devuelve la cuadrícula, los ejes y los números (van en "base": aparecen de una). */
+function plano(o){
+  const {ox, oy, u, x0, x1, y0, y1} = o, X = x => ox + x * u, Y = y => oy - y * u, out = [];
+  let g = "";
+  for (let x = x0; x <= x1; x++) g += `M${X(x)} ${Y(y1)} L${X(x)} ${Y(y0)} `;
+  for (let y = y0; y <= y1; y++) g += `M${X(x0)} ${Y(y)} L${X(x1)} ${Y(y)} `;
+  out.push(PA(g, "#d3dbe5", 1.5));
+  const xa = X(x1) + 26, ya = Y(y1) - 26;
+  out.push(PA(`M${X(x0) - 14} ${oy} L${xa} ${oy} M${xa} ${oy} l-14 -8 M${xa} ${oy} l-14 8 M${ox} ${Y(y0) + 14} L${ox} ${ya} M${ox} ${ya} l-8 14 M${ox} ${ya} l8 14`, DARK, 3));
+  for (let x = x0; x <= x1; x++) if (x) out.push(T(menos(x), X(x) - (x < 0 ? 12 : 5), oy + 24, 19, GREY));
+  for (let y = y0; y <= y1; y++) if (y) out.push(T(menos(y), ox - (y < 0 ? 32 : 22), Y(y) + 7, 19, GREY));
+  out.push(T("0", ox - 20, oy + 24, 19, GREY), T("x", xa - 4, oy - 14, 28), T("y", ox + 14, ya + 8, 28));
+  return out;
+}
+const PX = (o, x) => o.ox + x * o.u, PY = (o, y) => o.oy - y * o.u;
+function punto(o, x, y, color, r){ r = r || 8; const cx = PX(o, x), cy = PY(o, y);
+  return PA(`M${cx - r} ${cy} a${r} ${r} 0 1 0 ${2 * r} 0 a${r} ${r} 0 1 0 ${-2 * r} 0`, color, 3, color); }
+/* Curva y = f(x) entre xa y xb; con flechas en las puntas si "flechas" */
+function curva(o, f, xa, xb, color, w, flechas){
+  const n = 60, pts = [];
+  for (let i = 0; i <= n; i++){ const x = xa + (xb - xa) * i / n; pts.push([PX(o, x), PY(o, f(x))]); }
+  let d = "M" + pts.map(p => p[0].toFixed(1) + " " + p[1].toFixed(1)).join(" L");
+  if (flechas){
+    const cab = (a, b) => { const ang = Math.atan2(a[1] - b[1], a[0] - b[0]), L = 18;
+      return [0.45, -0.45].map(s => `M${a[0].toFixed(1)} ${a[1].toFixed(1)} l${(-L * Math.cos(ang + s)).toFixed(1)} ${(-L * Math.sin(ang + s)).toFixed(1)}`).join(" "); };
+    d += " " + cab(pts[n], pts[n - 1]) + " " + cab(pts[0], pts[1]);
+  }
+  return PA(d, color, w || 5);
+}
+/* Línea punteada entre dos puntos del plano */
+function punteada(o, xa, ya, xb, yb, color){
+  const A = [PX(o, xa), PY(o, ya)], B = [PX(o, xb), PY(o, yb)], L = Math.hypot(B[0] - A[0], B[1] - A[1]), n = Math.max(1, Math.floor(L / 22));
+  let d = ""; for (let i = 0; i < n; i++){ const t0 = i / n, t1 = Math.min(1, (i + .55) / n);
+    d += `M${(A[0] + (B[0] - A[0]) * t0).toFixed(1)} ${(A[1] + (B[1] - A[1]) * t0).toFixed(1)} L${(A[0] + (B[0] - A[0]) * t1).toFixed(1)} ${(A[1] + (B[1] - A[1]) * t1).toFixed(1)} `; }
+  return PA(d, color || GREY, 3);
+}
+/* lím con "x→a" debajo; resto: texto o arreglo de ecuación (con fracciones) */
+function LIM(x, y, s, a, resto, color){
+  const c = color || DARK, out = [T("lím", x, y, s, c), T("x→" + a, x - 4, y + s * .62, s * .46, c)];
+  out.push(typeof resto === "string" ? T(resto, x + s * 1.75, y, s, c) : EQ(resto, x + s * 1.6, y, s, c));
+  return out;
+}
+/* Signo de integral dibujado, con límites a (abajo) y b (arriba) si se dan */
+function INTEG(x, y, s, a, b, color){
+  const c = color || DARK, f = v => v.toFixed(1);
+  const out = [PA(`M${f(x + .62 * s)} ${f(y - .82 * s)} C${f(x + .48 * s)} ${f(y - 1.08 * s)} ${f(x + .3 * s)} ${f(y - .85 * s)} ${f(x + .31 * s)} ${f(y - .3 * s)} L${f(x + .27 * s)} ${f(y + .35 * s)} C${f(x + .26 * s)} ${f(y + .78 * s)} ${f(x + .08 * s)} ${f(y + .78 * s)} ${f(x)} ${f(y + .55 * s)}`, c, Math.max(3, s / 14))];
+  if (b != null) out.push(T(String(b), x + .66 * s, y - .62 * s, s * .45, c));
+  if (a != null) out.push(T(String(a), x + .36 * s, y + .72 * s, s * .45, c));
+  return out;
+}
+
+// TITULO: Derivadas de polinomios
+// TRATO: tu
+const OD = {ox:350, oy:620, u:60, x0:-3, x1:4, y0:-2, y1:6};
+const O6 = {ox:930, oy:560, u:45, x0:-1, x1:6, y0:-4, y1:4};
+const LAMINAS = [
+  { pag:"Inicio", titulo:"Derivadas de polinomios", items:[
+      T("Matemáticas · grado 11", 120, 250, 44, BLUE),
+      T("y = xⁿ   →   y′ = n · xⁿ⁻¹", 120, 390, 52),
+      T("y = 3x⁴ − 5x² + 7x − 9   →   y′ = 12x³ − 10x + 7", 120, 500, 36),
+      T("Regla de la potencia · pendiente en un punto", 120, 640, 34, GREY)],
+    say:"¡Hola! Soy el profe Alirio. En esta clase vamos a aprender a derivar polinomios con la regla de la potencia, y a usar la derivada para hallar la pendiente en un punto. Ten listo el cuaderno." },
+
+  { pag:"Lámina 1 de 7", titulo:"Lámina 1 · ¿Qué es la derivada?", base:plano(OD), items:[
+      curva(OD, x => x * x, -2.4, 2.4, BLUE, 5),
+      curva(OD, x => 2 * x - 1, -0.5, 3.5, RED, 4, true),
+      punto(OD, 1, 1, RED, 9), T("recta tangente", PX(OD, 2.2), PY(OD, 2.4), 28, RED),
+      T("La derivada mide cómo cambia y", 700, 260, 36),
+      T("cuando cambia x", 700, 310, 36),
+      T("Es la pendiente de la recta tangente:", 700, 410, 34, RED),
+      T("la recta que toca la curva en un punto", 700, 455, 30, RED),
+      T("Se escribe  y′  (ye prima)", 700, 570, 40, BLUE)],
+    say:"Lámina uno. La derivada nos dice qué tan rápido cambia ye cuando cambia equis. En la gráfica es la pendiente de la recta que toca la curva en un solo punto: la recta tangente. La escribimos ye prima." },
+
+  { pag:"Lámina 2 de 7", titulo:"Lámina 2 · Constante y x sola", items:[
+      T("y = 7   →   y′ = 0", 140, 260, 54), T("un número solo no cambia", 640, 260, 30, GREY),
+      T("y = x   →   y′ = 1", 140, 400, 54),
+      T("y = 5x   →   y′ = 5", 140, 540, 54), T("queda el número que acompaña a x", 640, 540, 30, GREY)],
+    say:"Lámina dos. La derivada de un número solo es cero, porque un número no cambia. La derivada de equis es uno. Y la derivada de cinco equis es cinco: el número que acompaña a la equis." },
+
+  { pag:"Lámina 3 de 7", titulo:"Lámina 3 · Regla de la potencia", items:[
+      T("y = xⁿ   →   y′ = n · xⁿ⁻¹", 120, 250, 58, BLUE),
+      T("El exponente baja a multiplicar y se le resta 1", 120, 340, 34, GREY),
+      T("y = x³   →   y′ = 3x²", 160, 480, 52, RED),
+      T("y = x⁵   →   y′ = 5x⁴", 160, 610, 52, RED)],
+    say:"Lámina tres. La regla de la potencia, la más importante. El exponente baja a multiplicar y al exponente se le resta uno. Equis al cubo: baja el tres, queda tres equis al cuadrado. Equis a la quinta: cinco equis a la cuarta." },
+
+  { pag:"Lámina 4 de 7", titulo:"Lámina 4 · Número por potencia", items:[
+      T("y = 4x³", 140, 250, 52), T("→   y′ = 4 · 3x² = 12x²", 400, 250, 48, RED),
+      T("y = −2x⁵", 140, 410, 52), T("→   y′ = −2 · 5x⁴ = −10x⁴", 400, 410, 48, RED),
+      T("El número de adelante se queda", 140, 560, 38, BLUE),
+      T("y se multiplica por el exponente que baja", 140, 615, 38, BLUE)],
+    say:"Lámina cuatro. Si la potencia tiene un número adelante, ese número se queda y se multiplica por el exponente que baja. Cuatro por tres, doce, y equis queda al cuadrado. Menos dos por cinco, menos diez, y equis queda a la cuarta." },
+
+  { pag:"Lámina 5 de 7", titulo:"Lámina 5 · Un polinomio completo", items:[
+      T("y = 3x⁴ − 5x² + 7x − 9", 120, 220, 52),
+      T("3x⁴  →  12x³", 160, 320, 40, BLUE),
+      T("−5x²  →  −10x", 160, 390, 40, BLUE),
+      T("7x  →  7", 160, 460, 40, BLUE),
+      T("−9  →  0  (desaparece)", 160, 530, 40, GREY),
+      T("y′ = 12x³ − 10x + 7", 120, 650, 58, RED)],
+    say:"Lámina cinco. Un polinomio se deriva término por término. Tres equis a la cuarta: doce equis al cubo. Menos cinco equis al cuadrado: menos diez equis. Siete equis: siete. Y menos nueve, que es un número solo, se vuelve cero y desaparece." },
+
+  { pag:"Lámina 6 de 7", titulo:"Lámina 6 · La pendiente en un punto", base:plano(O6), items:[
+      T("y = x² − 4x + 1", 120, 230, 46),
+      T("y′ = 2x − 4", 120, 320, 46, BLUE),
+      T("Si x = 3  →  y′ = 2(3) − 4 = 2", 120, 430, 40, RED),
+      T("En x = 3 la pendiente", 120, 540, 36),
+      T("de la tangente es 2", 120, 590, 36),
+      curva(O6, x => x * x - 4 * x + 1, -0.2, 4.6, BLUE, 4),
+      punto(O6, 3, -2, RED, 8),
+      curva(O6, x => 2 * x - 8, 2.2, 4.6, RED, 4, true)],
+    say:"Lámina seis. Primero derivamos ye igual a equis al cuadrado menos cuatro equis más uno: ye prima es dos equis menos cuatro. Para saber la pendiente en un punto, reemplazamos en la derivada. Si equis es tres: dos por tres, seis, menos cuatro, dos. En ese punto la curva sube con pendiente dos." },
+
+  { pag:"Lámina 7 de 7", titulo:"Lámina 7 · Ahora tú", items:[
+      T("a)  Deriva  y = 6x³ − 2x² + x − 8", 120, 230, 44),
+      T("b)  Deriva  y = x⁴ + 3x² − 5x", 120, 330, 44),
+      T("y halla la pendiente en x = 1", 175, 395, 40)],
+    resp:[
+      T("a)  y′ = 18x² − 4x + 1", 120, 520, 46, RED),
+      T("b)  y′ = 4x³ + 6x − 5", 120, 610, 46, RED),
+      T("Si x = 1  →  y′ = 4 + 6 − 5 = 5", 175, 690, 40, RED)],
+    say:"Lámina siete. Ahora tú. Primero: deriva ye igual a seis equis al cubo, menos dos equis al cuadrado, más equis, menos ocho. Segundo: deriva ye igual a equis a la cuarta, más tres equis al cuadrado, menos cinco equis, y halla la pendiente en equis igual a uno. Cuando termines, toca el botón Ver la respuesta.",
+    sayResp:"Revisemos. Primero: seis por tres, dieciocho equis al cuadrado; menos dos por dos, menos cuatro equis; equis da uno; y menos ocho desaparece. Segundo: cuatro equis al cubo, más seis equis, menos cinco. Si equis es uno: cuatro más seis menos cinco, cinco. ¿Te dio igual? ¡Muy bien!" }
+];
+const DUDAS = [
+  { q:"¿Por qué la derivada de un número da 0?", a:"Porque un número no cambia, y la derivada mide el cambio.", say:"Porque un número no cambia, y la derivada mide el cambio." },
+  { q:"¿Por qué la derivada de 7x es 7?", a:"Porque 7x es 7x¹: baja el 1, queda 7x⁰, y x⁰ = 1.", say:"Porque siete equis es siete equis a la uno: baja el uno, queda siete equis a la cero, y equis a la cero es uno." },
+  { q:"¿El exponente siempre baja y se le resta 1?", a:"Sí, en cada potencia de x." },
+  { q:"¿y′ y dy/dx son lo mismo?", a:"Sí, son dos formas de escribir la derivada.", say:"Sí. Ye prima y de ye sobre de equis son dos formas de escribir la derivada." }
+];
+
+/* =================== Tablero y mini profe =================== */
+const NS = "http://www.w3.org/2000/svg";
+const ink = $("ink"), profeG = $("profe");
+const el = (t, a, p) => { const e = document.createElementNS(NS, t); for (const k in a) e.setAttribute(k, a[k]); (p || ink).appendChild(e); return e; };
+let nodos = [], dibujoId = 0;
+function construir(lam){
+  ink.innerHTML = ""; nodos = [];
+  const todos = [...(lam.base || []).map(x => ({...x, _base:true})), ...lam.items];
+  todos.forEach((it, i) => {
+    if (it.path){
+      const p = el("path", {d:it.path, fill:it.fill || "none", "fill-opacity":0, stroke:it.color, "stroke-width":it.w, "stroke-linecap":"round", "stroke-linejoin":"round"});
+      const L = p.getTotalLength(); p.style.strokeDasharray = L; p.style.strokeDashoffset = L;
+      nodos.push({it, p, L});
+    } else if (it.eq){ // ecuación con fracciones desplegadas, se escribe de izquierda a derecha
+      const cp = el("clipPath", {id:"c" + i});
+      const r = el("rect", {x:it.x - 4, y:it.y - it.size * 1.5, width:0, height:it.size * 2.5}, cp);
+      const g = el("g", {"clip-path":`url(#c${i})`});
+      const at = {"font-family":"Kalam, cursive", fill:it.color};
+      let X = it.x;
+      it.eq.forEach(sg => {
+        if (typeof sg === "string"){ const t = el("text", {...at, x:X, y:it.y, "font-size":it.size, "xml:space":"preserve"}, g); t.textContent = sg; X += t.getComputedTextLength(); }
+        else { const fs = it.size * .82; X += it.size * .25;
+          const tn = el("text", {...at, y:it.y - it.size * .55, "font-size":fs, "text-anchor":"middle"}, g); tn.textContent = sg.n;
+          const td = el("text", {...at, y:it.y + it.size * .62, "font-size":fs, "text-anchor":"middle"}, g); td.textContent = sg.d;
+          const Lw = Math.max(tn.getComputedTextLength(), td.getComputedTextLength()) + 14;
+          tn.setAttribute("x", X + Lw / 2 + 4); td.setAttribute("x", X + Lw / 2 + 4);
+          el("line", {x1:X + 4, x2:X + 4 + Lw, y1:it.y - it.size * .3, y2:it.y - it.size * .3, stroke:it.color, "stroke-width":Math.max(2.5, it.size / 14), "stroke-linecap":"round"}, g);
+          X += Lw + 10 + it.size * .25; }
+      });
+      nodos.push({it, t:g, r, W:X - it.x + 10, eqLen:it.eq.map(sg => typeof sg === "string" ? sg : sg.n).join("").length});
+    } else {
+      const cp = el("clipPath", {id:"c" + i});
+      const r = el("rect", {x:it.x - 4, y:it.y - it.size * 1.15, width:0, height:it.size * 1.6}, cp);
+      const t = el("text", {x:it.x, y:it.y, "xml:space":"preserve", "font-family":"Kalam, cursive", "font-size":it.size, fill:it.color, "clip-path":`url(#c${i})`});
+      t.textContent = it.text; nodos.push({it, t, r, W:0});
+    }
+  });
+  nodos.forEach(n => { if (n.t && !n.it.eq) n.W = n.t.getComputedTextLength() + 10; });
+}
+function prog(n, f){
+  if (n.p){ n.p.style.strokeDashoffset = n.L * (1 - f); if (n.it.fill) n.p.setAttribute("fill-opacity", f >= 1 ? 1 : 0); const q = n.p.getPointAtLength(n.L * f); return {x:q.x, y:q.y}; }
+  n.r.setAttribute("width", n.W * f); const it = n.it;
+  return {x:it.x + n.W * f - 4, y:it.y - it.size * .28 + Math.sin(f * n.W / 9) * it.size * .12};
+}
+const dur = n => n.p ? Math.max(.35, n.L / 430) : Math.max(.5, (n.it.eq ? n.eqLen : n.it.text.length) * .07);
+
+const SKIN="#e2b48f", SKIN_D="#c9946d", SHIRT="#2f6fd0", SHIRT_D="#244f97", PANTS="#2b3340", HAIR="#231f1d";
+const P = {};
+function dibujarProfe(){
+  profeG.innerHTML = ""; const g = el("g", {}, profeG); P.root = g;
+  const b = el("g", {}, g);
+  P.legL = el("g", {}, g); P.legR = el("g", {}, g);
+  el("rect", {x:-48, y:700, width:42, height:170, rx:16, fill:PANTS}, P.legR);
+  el("ellipse", {cx:-36, cy:872, rx:34, ry:12, fill:"#15191f"}, P.legR);
+  el("rect", {x:6, y:700, width:42, height:170, rx:16, fill:"#353f4f"}, P.legL);
+  el("ellipse", {cx:16, cy:872, rx:34, ry:12, fill:"#15191f"}, P.legL);
+  el("path", {d:"M-80 505 Q-84 466 -36 458 L36 458 Q80 466 80 505 Q82 610 72 712 L-72 712 Q-82 610 -80 505 Z", fill:SHIRT}, g);
+  el("path", {d:"M-76 690 L74 690 L72 716 L-72 716 Z", fill:"#1b2330"}, g);
+  el("path", {d:"M-28 460 L-8 494 L12 460 Z", fill:"#f4f6f8"}, g);
+  el("path", {d:"M-8 494 Q-24 590 -22 684", fill:"none", stroke:SHIRT_D, "stroke-width":3}, g);
+  // brazo izquierdo: cuelga al costado, con borde para que se distinga del cuerpo
+  el("path", {d:"M62 496 Q96 560 94 660", stroke:SHIRT_D, "stroke-width":42, fill:"none", "stroke-linecap":"round"}, g);
+  el("path", {d:"M62 496 Q96 560 94 660", stroke:SHIRT, "stroke-width":34, fill:"none", "stroke-linecap":"round"}, g);
+  el("rect", {x:76, y:654, width:36, height:12, rx:5, fill:"#f4f6f8"}, g);
+  el("ellipse", {cx:94, cy:684, rx:18, ry:21, fill:SKIN, stroke:SKIN_D, "stroke-width":2.5}, g);
+  [82, 90, 98, 106].forEach((x, i) => el("ellipse", {cx:x, cy:702 + (i === 0 || i === 3 ? -3 : 0), rx:5, ry:10, fill:SKIN, stroke:SKIN_D, "stroke-width":2}, g));
+  el("ellipse", {cx:94, cy:684, rx:17, ry:17, fill:SKIN}, g);
+  el("ellipse", {cx:77, cy:688, rx:6, ry:9, fill:SKIN, stroke:SKIN_D, "stroke-width":2, transform:"rotate(25 77 688)"}, g);
+  el("rect", {x:-28, y:422, width:44, height:46, rx:14, fill:SKIN_D}, g);
+  el("ellipse", {cx:-6, cy:390, rx:62, ry:66, fill:SKIN}, g);
+  el("path", {d:"M-52 440 Q-24 462 8 446", fill:"none", stroke:SKIN_D, "stroke-width":3, "stroke-linecap":"round"}, g);
+  el("ellipse", {cx:-44, cy:414, rx:12, ry:8, fill:"#e8a07f", opacity:.55}, g);
+  el("ellipse", {cx:52, cy:396, rx:11, ry:17, fill:SKIN_D}, g);
+  el("path", {d:"M-66 392 Q-82 410 -64 420", fill:SKIN, stroke:SKIN_D, "stroke-width":3}, g);
+  el("path", {d:"M-64 372 Q-72 314 -22 314 Q-4 296 20 312 Q52 308 62 340 Q74 368 60 400 Q56 378 46 372 Q40 350 24 352 Q8 340 -8 352 Q-24 340 -38 352 Q-56 350 -64 372 Z", fill:HAIR}, g);
+  el("rect", {x:-62, y:375, width:26, height:22, rx:5, fill:"rgba(200,225,255,.35)", stroke:"#1b1b1b", "stroke-width":3.5}, g);
+  el("rect", {x:-28, y:374, width:36, height:24, rx:5, fill:"rgba(200,225,255,.35)", stroke:"#1b1b1b", "stroke-width":3.5}, g);
+  el("line", {x1:-36, y1:384, x2:-28, y2:384, stroke:"#1b1b1b", "stroke-width":3}, g);
+  el("line", {x1:8, y1:382, x2:40, y2:386, stroke:"#1b1b1b", "stroke-width":3}, g);
+  el("circle", {cx:-50, cy:387, r:3.5, fill:"#1b1b1b"}, g);
+  el("circle", {cx:-12, cy:387, r:4, fill:"#1b1b1b"}, g);
+  el("path", {d:"M-46 424 Q-28 438 -10 424", fill:"none", stroke:"#7a3b2b", "stroke-width":4, "stroke-linecap":"round"}, g);
+  el("circle", {cx:-2, cy:420, r:3, fill:SKIN_D}, g);
+  P.upO = el("line", {stroke:SHIRT_D, "stroke-width":46, "stroke-linecap":"round"}, g);
+  P.foreO = el("line", {stroke:SHIRT_D, "stroke-width":41, "stroke-linecap":"round"}, g);
+  P.up = el("line", {stroke:SHIRT, "stroke-width":38, "stroke-linecap":"round"}, g);
+  P.fore = el("line", {stroke:SHIRT, "stroke-width":33, "stroke-linecap":"round"}, g);
+  P.cuff = el("circle", {r:16, fill:"#f4f6f8"}, g);
+  P.pencil = el("line", {stroke:"#f2b705", "stroke-width":9, "stroke-linecap":"round"}, g);
+  P.tipp = el("circle", {r:4, fill:"#333"}, g);
+  P.hand = el("circle", {r:19, fill:SKIN, stroke:SKIN_D, "stroke-width":2.5}, g);
+  P.thumb = el("ellipse", {rx:9, ry:6, fill:SKIN, stroke:SKIN_D, "stroke-width":2}, g);
+  P.dedos = [0, 1, 2, 3].map(() => el("ellipse", {rx:10, ry:5, fill:SKIN, stroke:SKIN_D, "stroke-width":2}, g));
+}
+const SH = {x:-70, y:494}, L1 = 175, L2 = 165, REPOSO = 1430;
+let cx = REPOSO, paso = 0;
+function pose(tip, escribiendo){
+  P.root.setAttribute("transform", `translate(${cx},0)`);
+  const sw = Math.sin(paso) * 10;
+  P.legL.setAttribute("transform", `rotate(${sw} 20 705)`); P.legR.setAttribute("transform", `rotate(${-sw} -20 705)`);
+  const hx = escribiendo ? tip.x - cx + 20 : -86, hy = escribiendo ? tip.y + 26 : 684;
+  const dx = hx - SH.x, dy = hy - SH.y;
+  const d = Math.min(Math.max(Math.hypot(dx, dy), Math.abs(L1 - L2) + 2), L1 + L2 - 2);
+  const a = Math.atan2(dy, dx), th = Math.acos((L1 * L1 + d * d - L2 * L2) / (2 * L1 * d));
+  let ex = SH.x + L1 * Math.cos(a + th), ey = SH.y + L1 * Math.sin(a + th);
+  const ex2 = SH.x + L1 * Math.cos(a - th), ey2 = SH.y + L1 * Math.sin(a - th);
+  if (ey2 > ey){ ex = ex2; ey = ey2; }
+  if (!escribiendo){ ex = (SH.x + hx) / 2 - 18; ey = (SH.y + hy) / 2; } // en reposo el brazo cuelga casi recto
+  const r = Math.hypot(dx, dy), k = r > L1 + L2 - 2 ? (L1 + L2 - 2) / r : 1;
+  const fx = SH.x + dx * k, fy = SH.y + dy * k;
+  const set = (e, o) => { for (const q in o) e.setAttribute(q, o[q]); };
+  set(P.up, {x1:SH.x, y1:SH.y, x2:ex, y2:ey}); set(P.fore, {x1:ex, y1:ey, x2:fx, y2:fy});
+  set(P.upO, {x1:SH.x, y1:SH.y, x2:ex, y2:ey});
+  const ux = fx - ex, uy = fy - ey, ul = Math.hypot(ux, uy) || 1;
+  const wx = fx - ux / ul * 20, wy = fy - uy / ul * 20; // muñeca
+  set(P.foreO, {x1:ex, y1:ey, x2:wx, y2:wy}); set(P.fore, {x1:ex, y1:ey, x2:wx, y2:wy});
+  set(P.cuff, {cx:wx, cy:wy});
+  set(P.hand, {cx:fx, cy:fy}); set(P.thumb, {cx:fx - uy / ul * 12, cy:fy + ux / ul * 12});
+  const tx = escribiendo ? fx - 20 : fx - 6, ty = escribiendo ? fy - 26 : fy + 30;
+  set(P.pencil, {x1:fx, y1:fy, x2:tx, y2:ty}); set(P.tipp, {cx:tx, cy:ty});
+  // dedos: apuntan hacia donde va el lápiz, abiertos en abanico
+  const ang = Math.atan2(ty - fy, tx - fx), deg = ang * 180 / Math.PI;
+  P.dedos.forEach((d, i) => { const o = (i - 1.5) * 8, x = fx + Math.cos(ang) * 14 - Math.sin(ang) * o, y = fy + Math.sin(ang) * 14 + Math.cos(ang) * o;
+    set(d, {cx:x, cy:y, transform:`rotate(${deg} ${x} ${y})`}); });
+  // el lápiz y la punta quedan delante de los dedos
+  P.root.appendChild(P.pencil); P.root.appendChild(P.tipp);
+}
+const sinMov = matchMedia("(prefers-reduced-motion: reduce)").matches;
+function mostrarLamina(k, animar, alTerminar){
+  const lam = typeof k === "object" ? k : LAMINAS[k]; const id = ++dibujoId;
+  $("titulo").textContent = lam.titulo; $("pag").textContent = lam.pag;
+  construir(lam);
+  const base = nodos.filter(n => n.it._base), resto = nodos.filter(n => !n.it._base);
+  base.forEach(n => prog(n, 1));
+  if (!animar || sinMov){ resto.forEach(n => prog(n, 1)); cx = REPOSO; paso = 0; pose({x:0, y:0}, false); if (alTerminar) alTerminar(); return; }
+  resto.forEach(n => prog(n, 0));
+  let i = 0, t0 = null, fase = "camina";
+  function cuadro(ts){
+    if (id !== dibujoId) return;
+    const n = resto[i];
+    if (!n){ const v = (REPOSO - cx) * .06; cx += v; paso += Math.abs(v) * .09; pose({x:0, y:0}, false);
+      if (Math.abs(REPOSO - cx) > 1) requestAnimationFrame(cuadro); else { cx = REPOSO; paso = 0; pose({x:0, y:0}, false); if (alTerminar) alTerminar(); } return; }
+    const ini = prog(n, 0), quiere = Math.min(1440, Math.max(330, ini.x + 300));
+    if (fase === "camina"){ const v = (quiere - cx) * .1; cx += v; paso += Math.abs(v) * .09; pose(ini, true); if (Math.abs(quiere - cx) < 3){ fase = "escribe"; t0 = ts; } }
+    else { const f = Math.min(1, (ts - t0) / 1000 / dur(n)); const tip = prog(n, f);
+      const w2 = Math.min(1440, Math.max(330, tip.x + 300)); if (w2 - cx > 140){ const v = (w2 - 140 - cx) * .2; cx += v; paso += Math.abs(v) * .09; }
+      pose(tip, true); if (f >= 1){ i++; fase = "camina"; } }
+    requestAnimationFrame(cuadro);
+  }
+  requestAnimationFrame(cuadro);
+}
+
+
+/* =================== La clase (cada estudiante a su ritmo) =================== */
+let k = 0, vozOn = true, voces = [];
+const hayVoz = "speechSynthesis" in window;
+/* Voces del celular: se prefiere una voz de hombre en español; el estudiante puede escoger otra en "Voz". */
+const HOMBRES = /(raul|raúl|pablo|jorge|diego|juan|carlos|enrique|alvaro|álvaro|gonzalo|andres|andrés|tomas|tomás|jose|josé|miguel|gerardo|jaime|dario|darío|emilio|federico|hugo|alonso|lorenzo|salvador|gabriel|\bmale\b|hombre|masculin)/i;
+const MUJERES = /(female|mujer|femenin|paulina|monica|mónica|helena|laura|sabina|elvira|dalia|salome|salomé|paloma|marisol|lucia|lucía|soledad|angelica|angélica|isabel|francisca|ximena|catalina|camila|valentina|esperanza|elena|ines|inés)/i;
+let vozElegida = "";
+try { vozElegida = localStorage.getItem("niv_voz") || ""; } catch (e) {}
+function puntos(v){ const l = v.lang.replace("_", "-"); let p = 0;
+  if (HOMBRES.test(v.name)) p += 100; if (MUJERES.test(v.name)) p -= 100;
+  p += {"es-CO":8, "es-MX":7, "es-US":6, "es-419":5, "es-ES":3}[l] || 1; if (/natural|online|neural|enhanced|premium/i.test(v.name)) p += 2; return p; }
+function cargarVoces(){
+  try { voces = speechSynthesis.getVoices().filter(v => /^es/i.test(v.lang)).sort((x, y) => puntos(y) - puntos(x)); } catch (e) { voces = []; }
+  const sel = $("elegirVoz"); if (!sel) return;
+  sel.innerHTML = voces.map(v => `<option value="${v.name.replace(/"/g, "&quot;")}">${v.name.replace(/</g, "&lt;")}${HOMBRES.test(v.name) ? " (hombre)" : ""}</option>`).join("");
+  if (vozElegida && voces.some(v => v.name === vozElegida)) sel.value = vozElegida;
+  $("cajaVoz").hidden = voces.length < 2;
+}
+function vozEs(){ return voces.find(v => v.name === vozElegida) || voces[0] || null; }
+if (hayVoz){ cargarVoces(); try { speechSynthesis.onvoiceschanged = cargarVoces; } catch (e) {} setTimeout(cargarVoces, 800); }
+function hablar(texto){
+  if (!hayVoz) return;
+  try { speechSynthesis.cancel(); } catch (e) {}
+  if (!vozOn || !texto) return;
+  try { const u = new SpeechSynthesisUtterance(texto); const v = vozEs(); if (v) u.voice = v; u.lang = v ? v.lang : "es-CO"; u.rate = .95; if (!HOMBRES.test(v ? v.name : "")) u.pitch = .8; speechSynthesis.speak(u); } catch (e) {}
+}
+function ajustarSubrayado(){ try { const w = $("titulo").getComputedTextLength(); $("subraya").setAttribute("x2", 80 + Math.min(w, 1200)); } catch (e) {} }
+function mostrar(n){
+  k = n; const lam = LAMINAS[k];
+  mostrarLamina(k, true); ajustarSubrayado();
+  $("texto").textContent = lam.say; hablar(lam.say);
+  $("anterior").disabled = k <= 0; $("siguiente").disabled = k >= LAMINAS.length - 1;
+  $("repetir").disabled = false;
+  $("cajaResp").hidden = !lam.resp; $("verResp").disabled = false; $("verResp").textContent = "👀 Ver la respuesta";
+}
+$("empezar").onclick = () => { $("inicio").hidden = true; mostrar(0); };
+$("siguiente").onclick = () => { if (k < LAMINAS.length - 1) mostrar(k + 1); };
+$("anterior").onclick = () => { if (k > 0) mostrar(k - 1); };
+$("repetir").onclick = () => { const lam = LAMINAS[k]; hablar($("verResp").disabled && lam.sayResp ? lam.sayResp : lam.say); };
+$("verResp").onclick = () => {
+  const lam = LAMINAS[k]; if (!lam.resp) return;
+  $("verResp").disabled = true; $("verResp").textContent = "✔ Respuesta";
+  mostrarLamina({titulo:lam.titulo, pag:lam.pag, base:[...(lam.base || []), ...lam.items], items:lam.resp}, true);
+  $("texto").textContent = lam.sayResp; hablar(lam.sayResp);
+};
+$("voz").onclick = () => {
+  vozOn = !vozOn; $("voz").setAttribute("aria-pressed", vozOn); $("voz").textContent = vozOn ? "🔊 Voz activada" : "🔇 Voz apagada";
+  if (!vozOn){ try { speechSynthesis.cancel(); } catch (e) {} }
+};
+if (!hayVoz){ $("voz").hidden = true; $("repetir").hidden = true; }
+document.addEventListener("keydown", e => {
+  if (!$("inicio").hidden) return;
+  if (e.key === "ArrowRight" && !$("siguiente").disabled) $("siguiente").click();
+  if (e.key === "ArrowLeft" && !$("anterior").disabled) $("anterior").click();
+});
+$("elegirVoz").onchange = () => { vozElegida = $("elegirVoz").value; try { localStorage.setItem("niv_voz", vozElegida); } catch (e) {} hablar("Hola. Así suena esta voz."); };
+/* Dudas frecuentes */
+$("listaDudas").innerHTML = DUDAS.map((d, i) => `<button type="button" data-i="${i}" aria-pressed="false">${d.q}</button>`).join("");
+$("abrirDudas").onclick = () => { const abre = $("panelDudas").hidden; $("panelDudas").hidden = !abre; $("abrirDudas").setAttribute("aria-expanded", abre); if (abre) $("panelDudas").scrollIntoView({behavior:"smooth", block:"nearest"}); };
+$("listaDudas").addEventListener("click", e => {
+  const b = e.target.closest("button[data-i]"); if (!b) return; const d = DUDAS[+b.dataset.i];
+  $("listaDudas").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
+  $("respPreg").textContent = d.q; $("respTxt").textContent = d.a; $("respDuda").hidden = false;
+  hablar(d.say || d.a);
+});
+
+/* Modo salón (para proyectar): ?salon en el enlace */
+const SALON = /[?&]salon\b/.test(location.search);
+if (SALON){
+  document.body.classList.add("salon");
+  document.querySelectorAll(".volver").forEach(x => x.href = "index.html#salon");
+  $("detener").onclick = () => { try { speechSynthesis.cancel(); } catch (e) {} if (k >= 0 && $("inicio").hidden){ const lam = LAMINAS[k];
+      if ($("verResp").disabled && lam.resp) mostrarLamina({titulo:lam.titulo, pag:lam.pag, base:[...(lam.base || []), ...lam.items], items:lam.resp}, false); else mostrarLamina(k, false); } };
+  $("repetirLam").onclick = () => { if ($("inicio").hidden) mostrar(k); };
+  $("verTexto").onclick = () => { const on = document.body.classList.toggle("texto"); $("verTexto").setAttribute("aria-pressed", on); };
+  $("completa").onclick = () => { try { if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen(); } catch (e) {} };
+  document.addEventListener("keydown", e => {
+    if (e.key === "f" || e.key === "F") $("completa").click();
+    if (e.key === " " && $("inicio").hidden){ e.preventDefault(); $("detener").click(); }
+  });
+}
+/* Primer cuadro: la portada dibujada y el profe en reposo, listo para empezar */
+dibujarProfe(); mostrarLamina(0, false); ajustarSubrayado();
+
+</script>
+
+</body>
+</html>
