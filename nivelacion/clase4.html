@@ -1,0 +1,465 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>body{margin:0}</style>
+</head>
+<body>
+<title>Factorización: tres casos</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Nunito:wght@400;700;800&display=swap">
+<style>
+/* Layout: una columna; el tablero blanco con el mini profe arriba, debajo los controles y el texto de lo que explica. */
+:root{
+  --bg:#e7edf4; --panel:#ffffff; --fg:#1d2733; --muted:#5d6b7b; --line:#c9d3df;
+  --azul:#1f5fbf; --azul-fg:#ffffff; --rojo:#c62f2f; --verde:#1d8a4e;
+  --font-ui:"Nunito", system-ui, sans-serif; --font-mano:"Kalam", "Comic Sans MS", cursive;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#141a22; --panel:#1d2530; --fg:#e8edf3; --muted:#9fb0c2; --line:#334050;
+  --azul:#5b9bf0; --azul-fg:#0d1622; --rojo:#ef7070; --verde:#4cc287; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#141a22; --panel:#1d2530; --fg:#e8edf3; --muted:#9fb0c2; --line:#334050;
+  --azul:#5b9bf0; --azul-fg:#0d1622; --rojo:#ef7070; --verde:#4cc287; color-scheme:dark }
+body{background:var(--bg); color:var(--fg); font-family:var(--font-ui); font-size:16px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px)); padding-block:14px 28px}
+.wrap{max-width:1180px; margin:0 auto; display:grid; gap:12px}
+.cab{display:flex; align-items:baseline; justify-content:space-between; gap:12px; flex-wrap:wrap}
+.cab h1{margin:0; font-family:var(--font-mano); font-weight:700; font-size:clamp(1.3rem, 3.6vw, 1.9rem); text-wrap:balance}
+.derecha{display:flex; gap:14px; align-items:baseline; flex-wrap:wrap}
+.volver{color:var(--azul); font-weight:700; text-decoration:none}
+.volver:hover{text-decoration:underline}
+.pag{color:var(--muted); font-weight:700; font-variant-numeric:tabular-nums}
+.tablero{position:relative}
+#ink text{white-space:pre}
+.tablero svg{display:block; width:100%; height:auto; max-width:100%}
+.inicio{position:absolute; inset:0; display:grid; place-items:center; background:rgba(16,24,34,.35); border-radius:10px}
+.inicio[hidden]{display:none}
+.controles{display:flex; flex-wrap:wrap; gap:10px; align-items:center}
+.controles .esp{flex:1}
+.btn{font:inherit; font-weight:800; border-radius:10px; padding:10px 16px; cursor:pointer; border:1px solid var(--line); background:var(--panel); color:var(--fg)}
+.btn.go{background:var(--azul); color:var(--azul-fg); border-color:var(--azul)}
+.btn.grande{font-size:1.2rem; padding:14px 26px}
+.btn:disabled{opacity:.45; cursor:default}
+.btn:focus-visible{outline:3px solid var(--azul); outline-offset:2px}
+.btn[aria-pressed="true"]{border-color:var(--azul); color:var(--azul)}
+.dice{background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:12px 16px; line-height:1.55; max-width:none; min-width:0}
+.dice b{display:block; font-size:.8rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); margin-bottom:4px}
+.resp{display:flex; gap:10px; flex-wrap:wrap}
+[hidden]{display:none!important}
+.cajaVoz{display:flex; align-items:center; gap:6px; font-weight:700; color:var(--muted); min-width:0}
+.cajaVoz select{font:inherit; font-weight:400; max-width:220px; padding:8px; border-radius:8px; border:1px solid var(--line); background:var(--panel); color:var(--fg)}
+.dudas{background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:12px 16px; display:grid; gap:10px; min-width:0}
+.dudas-cab{display:flex; flex-wrap:wrap; gap:4px 12px; align-items:baseline}
+.dudas-cab span{color:var(--muted); font-size:.9rem}
+.lista{display:grid; grid-template-columns:repeat(auto-fill, minmax(260px, 1fr)); gap:8px}
+.lista button{font:inherit; text-align:left; line-height:1.35; padding:9px 12px; border-radius:8px; border:1px solid var(--line); background:var(--bg); color:var(--fg); cursor:pointer}
+.lista button[aria-pressed="true"]{border-color:var(--azul); color:var(--azul); font-weight:700}
+.lista button:focus-visible{outline:3px solid var(--azul); outline-offset:2px}
+.respDuda{border-left:4px solid var(--verde); padding:4px 0 4px 12px}
+.respDuda p{margin:.3em 0 0; line-height:1.55; font-size:1.05rem}
+.girar{display:none; font-size:.9rem; color:var(--muted); text-align:center}
+@media (max-width:600px) and (orientation:portrait){ .girar{display:block} }
+@media (max-width:560px){ .btn{padding:10px 12px} .controles .esp{display:none} }
+</style>
+
+<div class="wrap">
+  <div class="cab">
+    <h1>Factorización: tres casos</h1>
+    <span class="derecha"><a class="volver" href="index.html">← Todas las clases</a><span class="pag" id="pag">Inicio</span></span>
+  </div>
+  <div class="tablero">
+    <svg id="svg" viewBox="0 0 1600 900" role="img" aria-label="Tablero de la clase con el mini profe Alirio">
+      <rect x="20" y="20" width="1560" height="860" rx="14" fill="#8a96a3"/>
+      <rect x="34" y="34" width="1532" height="832" rx="8" fill="#fbfcfd"/>
+      <text id="titulo" x="80" y="108" font-family="Kalam, cursive" font-weight="700" font-size="50" fill="#1d2733">Factorización: tres casos</text>
+      <line id="subraya" x1="80" y1="126" x2="760" y2="126" stroke="#1f5fbf" stroke-width="4" stroke-linecap="round"/>
+      <g id="ink"></g>
+      <g id="profe"></g>
+      <rect x="20" y="866" width="1560" height="14" rx="4" fill="#6e7a87"/>
+    </svg>
+    <div class="inicio" id="inicio"><button class="btn go grande" id="empezar">▶ Empezar la clase</button></div>
+  </div>
+  <div class="girar">📱 Gire el celular para ver el tablero más grande.</div>
+  <div class="controles">
+    <button class="btn" id="anterior" disabled>◀ Anterior</button>
+    <button class="btn go" id="siguiente" disabled>Siguiente ▶</button>
+    <span class="esp"></span>
+    <button class="btn" id="voz" aria-pressed="true">🔊 Voz activada</button>
+    <label class="cajaVoz" id="cajaVoz" hidden>Voz <select id="elegirVoz"></select></label>
+    <button class="btn" id="repetir" disabled>↻ Escuchar otra vez</button>
+    <button class="btn" id="abrirDudas" aria-expanded="false" aria-controls="panelDudas">✋ Tengo una duda</button>
+  </div>
+  <section class="dudas" id="panelDudas" hidden aria-label="Dudas frecuentes">
+    <div class="dudas-cab"><b>Dudas frecuentes</b><span>Toque su duda y el profe le responde.</span></div>
+    <div class="lista" id="listaDudas"></div>
+    <div class="respDuda" id="respDuda" hidden><b id="respPreg"></b><p id="respTxt"></p></div>
+  </section>
+  <div class="resp" id="cajaResp" hidden><button class="btn go" id="verResp">👀 Ver la respuesta</button></div>
+  <div class="dice" id="dice" aria-live="polite"><b>Explicación</b><span id="texto">Toque «Empezar la clase». Tenga a la mano el cuaderno.</span></div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const BLUE="#1f5fbf", GREEN="#1d8a4e", RED="#c62f2f", DARK="#1d2733", GREY="#6b7785", ORANGE="#c36a12";
+const F_AZ="rgba(31,95,191,.14)", F_VE="rgba(29,138,78,.16)", F_NA="rgba(214,130,30,.18)", F_RO="rgba(198,47,47,.10)";
+/* Piezas comunes de las láminas: texto, trazo, ecuación con fracción y plano cartesiano */
+const T = (text, x, y, size, color) => ({text, x, y, size, color:color || DARK});
+const PA = (path, color, w, fill) => ({path, color, w, fill});
+const EQ = (eq, x, y, size, color) => ({eq, x, y, size, color:color || DARK});
+const menos = n => String(n).replace("-", "−");
+/* Plano: o = {ox, oy, u, x0, x1, y0, y1}. Devuelve la cuadrícula, los ejes y los números (van en "base": aparecen de una). */
+function plano(o){
+  const {ox, oy, u, x0, x1, y0, y1} = o, X = x => ox + x * u, Y = y => oy - y * u, out = [];
+  let g = "";
+  for (let x = x0; x <= x1; x++) g += `M${X(x)} ${Y(y1)} L${X(x)} ${Y(y0)} `;
+  for (let y = y0; y <= y1; y++) g += `M${X(x0)} ${Y(y)} L${X(x1)} ${Y(y)} `;
+  out.push(PA(g, "#d3dbe5", 1.5));
+  const xa = X(x1) + 26, ya = Y(y1) - 26;
+  out.push(PA(`M${X(x0) - 14} ${oy} L${xa} ${oy} M${xa} ${oy} l-14 -8 M${xa} ${oy} l-14 8 M${ox} ${Y(y0) + 14} L${ox} ${ya} M${ox} ${ya} l-8 14 M${ox} ${ya} l8 14`, DARK, 3));
+  for (let x = x0; x <= x1; x++) if (x) out.push(T(menos(x), X(x) - (x < 0 ? 12 : 5), oy + 24, 19, GREY));
+  for (let y = y0; y <= y1; y++) if (y) out.push(T(menos(y), ox - (y < 0 ? 32 : 22), Y(y) + 7, 19, GREY));
+  out.push(T("0", ox - 20, oy + 24, 19, GREY), T("x", xa - 4, oy - 14, 28), T("y", ox + 14, ya + 8, 28));
+  return out;
+}
+const PX = (o, x) => o.ox + x * o.u, PY = (o, y) => o.oy - y * o.u;
+function punto(o, x, y, color, r){ r = r || 8; const cx = PX(o, x), cy = PY(o, y);
+  return PA(`M${cx - r} ${cy} a${r} ${r} 0 1 0 ${2 * r} 0 a${r} ${r} 0 1 0 ${-2 * r} 0`, color, 3, color); }
+/* Curva y = f(x) entre xa y xb; con flechas en las puntas si "flechas" */
+function curva(o, f, xa, xb, color, w, flechas){
+  const n = 60, pts = [];
+  for (let i = 0; i <= n; i++){ const x = xa + (xb - xa) * i / n; pts.push([PX(o, x), PY(o, f(x))]); }
+  let d = "M" + pts.map(p => p[0].toFixed(1) + " " + p[1].toFixed(1)).join(" L");
+  if (flechas){
+    const cab = (a, b) => { const ang = Math.atan2(a[1] - b[1], a[0] - b[0]), L = 18;
+      return [0.45, -0.45].map(s => `M${a[0].toFixed(1)} ${a[1].toFixed(1)} l${(-L * Math.cos(ang + s)).toFixed(1)} ${(-L * Math.sin(ang + s)).toFixed(1)}`).join(" "); };
+    d += " " + cab(pts[n], pts[n - 1]) + " " + cab(pts[0], pts[1]);
+  }
+  return PA(d, color, w || 5);
+}
+/* Línea punteada entre dos puntos del plano */
+function punteada(o, xa, ya, xb, yb, color){
+  const A = [PX(o, xa), PY(o, ya)], B = [PX(o, xb), PY(o, yb)], L = Math.hypot(B[0] - A[0], B[1] - A[1]), n = Math.max(1, Math.floor(L / 22));
+  let d = ""; for (let i = 0; i < n; i++){ const t0 = i / n, t1 = Math.min(1, (i + .55) / n);
+    d += `M${(A[0] + (B[0] - A[0]) * t0).toFixed(1)} ${(A[1] + (B[1] - A[1]) * t0).toFixed(1)} L${(A[0] + (B[0] - A[0]) * t1).toFixed(1)} ${(A[1] + (B[1] - A[1]) * t1).toFixed(1)} `; }
+  return PA(d, color || GREY, 3);
+}
+
+// TITULO: Factorización: tres casos
+const LAMINAS = [
+  { pag:"Inicio", titulo:"Factorización: tres casos", items:[
+      T("Nivelación · Matemáticas 8°", 120, 250, 44, BLUE),
+      T("1. Factor común", 140, 370, 46),
+      T("2. Trinomio cuadrado perfecto", 140, 450, 46),
+      T("3. Diferencia de cuadrados", 140, 530, 46),
+      T("Factorizar: el camino de regreso de multiplicar", 120, 650, 36, GREY)],
+    say:"¡Hola, muchachos! Soy el profe Alirio. En esta clase de nivelación vamos a repasar tres casos de factorización: factor común, trinomio cuadrado perfecto y diferencia de cuadrados. Tengan listo el cuaderno." },
+
+  { pag:"Lámina 1 de 7", titulo:"Lámina 1 · ¿Qué es factorizar?", items:[
+      T("Multiplicar:", 120, 240, 42, BLUE), T("2x(x + 3)  →  2x² + 6x", 420, 240, 48),
+      T("Factorizar:", 120, 350, 42, RED), T("2x² + 6x  →  2x(x + 3)", 420, 350, 48),
+      T("Factorizar es el camino de regreso:", 120, 480, 40),
+      T("del resultado a los factores", 120, 535, 40),
+      T("1. Factor común    2. Trinomio cuadrado perfecto", 140, 650, 34, GREY),
+      T("3. Diferencia de cuadrados", 140, 705, 34, GREY)],
+    say:"Lámina uno. Factorizar es el camino de regreso de la multiplicación: tenemos el resultado y buscamos los factores que lo produjeron. Dos equis por equis más tres da dos equis al cuadrado más seis equis; factorizar es devolverse. Hoy vemos tres casos: factor común, trinomio cuadrado perfecto y diferencia de cuadrados." },
+
+  { pag:"Lámina 2 de 7", titulo:"Lámina 2 · Caso 1: Factor común", items:[
+      T("6x³ + 9x² − 3x", 120, 215, 52),
+      T("1) Número común más grande:  3", 140, 305, 36),
+      T("2) Letra común, con el menor exponente:  x", 140, 365, 36),
+      T("Factor común:  3x", 140, 440, 42, BLUE),
+      T("3) Dividir cada término entre 3x", 140, 510, 36),
+      T("= 3x(2x² + 3x − 1)", 120, 620, 56, RED),
+      T("Ojo: −3x ÷ 3x = −1  (queda 1, no 0)", 140, 705, 32, GREY)],
+    say:"Lámina dos. Factor común. Buscamos lo que se repite en todos los términos. El número más grande que divide a seis, nueve y tres es tres. La letra que está en todos es equis, con su menor exponente, que es uno. El factor común es tres equis. Ahora dividimos cada término entre tres equis: dos equis al cuadrado, más tres equis, menos uno. Ojo: cuando un término es igual al factor común, en el paréntesis queda uno, no cero." },
+
+  { pag:"Lámina 3 de 7", titulo:"Lámina 3 · Caso 2: Trinomio cuadrado perfecto", items:[
+      T("x² + 6x + 9", 120, 215, 52),
+      T("√x² = x       √9 = 3", 140, 290, 38, BLUE),
+      T("2 · x · 3 = 6x  ✓  (el del medio)", 140, 355, 38, GREEN),
+      T("= (x + 3)²", 120, 445, 56, RED),
+      T("El signo del paréntesis es el signo del medio", 560, 440, 28, GREY),
+      T("4a² − 20a + 25", 120, 570, 48),
+      T("√4a² = 2a     √25 = 5     2 · 2a · 5 = 20a  ✓", 140, 635, 32, GREY),
+      T("= (2a − 5)²", 120, 730, 54, RED)],
+    say:"Lámina tres. Trinomio cuadrado perfecto. Es un trinomio, o sea tres términos, donde el primero y el tercero tienen raíz cuadrada exacta, y el del medio es el doble del producto de esas raíces. Raíz de equis al cuadrado, equis; raíz de nueve, tres; dos por equis por tres, seis equis. Sí cumple. Se escribe la suma de las raíces, al cuadrado: equis más tres, al cuadrado. El signo del paréntesis es el signo del término del medio, por eso el segundo ejemplo queda dos a menos cinco, al cuadrado." },
+
+  { pag:"Lámina 4 de 7", titulo:"Lámina 4 · Caso 3: Diferencia de cuadrados", items:[
+      T("Dos términos que se RESTAN, con raíz exacta", 100, 205, 38, BLUE),
+      T("x² − 49", 120, 310, 52),
+      T("√x² = x       √49 = 7", 160, 380, 36, GREY),
+      T("= (x + 7)(x − 7)", 120, 465, 54, RED),
+      T("9y² − 16", 120, 590, 52),
+      T("√9y² = 3y       √16 = 4", 160, 660, 36, GREY),
+      T("= (3y + 4)(3y − 4)", 120, 745, 54, RED)],
+    say:"Lámina cuatro. Diferencia de cuadrados. Son dos términos que se restan y los dos tienen raíz cuadrada exacta. Se sacan las raíces y se escriben dos paréntesis: uno con más y otro con menos. Raíz de equis al cuadrado, equis; raíz de cuarenta y nueve, siete. Queda equis más siete por equis menos siete. En el segundo: tres ye más cuatro, por tres ye menos cuatro." },
+
+  { pag:"Lámina 5 de 7", titulo:"Lámina 5 · ¿Cuál caso uso?", items:[
+      T("Antes de factorizar, cuente los términos:", 100, 200, 38),
+      T("1. ¿Hay algo común en todos?  →  Factor común", 120, 295, 38, BLUE),
+      T("(siempre primero)", 170, 345, 30, GREY),
+      T("2. ¿Dos términos que se restan?  →  Diferencia de cuadrados", 120, 440, 33, GREEN),
+      T("3. ¿Tres términos, extremos con raíz exacta", 120, 545, 36, ORANGE),
+      T("y el del medio el doble producto?  →  Trinomio cuadrado perfecto", 150, 600, 31, ORANGE)],
+    say:"Lámina cinco. ¿Cuál caso uso? Antes de factorizar, cuenten los términos y hagan estas tres preguntas en orden. Primera: ¿todos los términos tienen algo en común? Entonces factor común, y esa pregunta siempre va primero. Segunda: ¿son dos términos que se restan, con raíz exacta? Diferencia de cuadrados. Tercera: ¿son tres términos, con el primero y el tercero cuadrados, y el del medio el doble producto? Trinomio cuadrado perfecto." },
+
+  { pag:"Lámina 6 de 7", titulo:"Lámina 6 · Dos casos en el mismo ejercicio", items:[
+      T("2x² − 18", 120, 220, 54),
+      T("1) Factor común:  2", 140, 310, 40, BLUE),
+      T("= 2(x² − 9)", 120, 400, 52),
+      T("2) x² − 9 es diferencia de cuadrados", 140, 490, 40, GREEN),
+      T("= 2(x + 3)(x − 3)", 120, 605, 56, RED),
+      T("(el 2 se queda adelante)", 140, 685, 32, GREY)],
+    say:"Lámina seis. A veces se usan dos casos. Primero sacamos el factor común, dos, y queda equis al cuadrado menos nueve. Eso es una diferencia de cuadrados: equis más tres por equis menos tres. La respuesta completa lleva el dos adelante." },
+
+  { pag:"Lámina 7 de 7", titulo:"Lámina 7 · Ahora ustedes", items:[
+      T("Factoricen:", 120, 210, 42, BLUE),
+      T("a)  10m² − 15m", 150, 300, 48),
+      T("b)  y² − 10y + 25", 150, 385, 48),
+      T("c)  25x² − 1", 150, 470, 48)],
+    resp:[
+      T("= 5m(2m − 3)", 660, 300, 48, RED),
+      T("= (y − 5)²", 660, 385, 48, RED),
+      T("= (5x + 1)(5x − 1)", 660, 470, 48, RED),
+      T("Comprueben multiplicando: debe dar el original", 150, 600, 34, GREEN)],
+    say:"Lámina siete. Ahora ustedes. Factoricen: primero, diez eme al cuadrado menos quince eme. Segundo, ye al cuadrado menos diez ye más veinticinco. Tercero, veinticinco equis al cuadrado menos uno. Cuando terminen, toquen el botón Ver la respuesta.",
+    sayResp:"Revisemos. El primero es factor común: cinco eme, por dos eme menos tres. El segundo es trinomio cuadrado perfecto: ye menos cinco, al cuadrado, porque dos por ye por cinco da diez ye y el signo del medio es menos. El tercero es diferencia de cuadrados: cinco equis más uno, por cinco equis menos uno. Comprueben multiplicando. ¿Les dio igual? ¡Muy bien!" }
+];
+const DUDAS = [
+  { q:"¿Cómo sé si factoricé bien?", a:"Multiplique los factores: debe dar el polinomio original." },
+  { q:"¿x² + 9 es diferencia de cuadrados?", a:"No, es una suma. La diferencia de cuadrados siempre tiene resta.",
+    say:"No, equis al cuadrado más nueve es una suma. La diferencia de cuadrados siempre tiene resta." },
+  { q:"¿Por qué en el factor común queda 1 y no 0?", a:"Porque un término dividido entre sí mismo da 1: 3x ÷ 3x = 1.", say:"Porque un término dividido entre sí mismo da uno." },
+  { q:"¿Y si el término del medio no es el doble producto?", a:"Entonces no es trinomio cuadrado perfecto; es otro caso que no vemos en esta clase." },
+  { q:"¿Cómo saco la raíz de 4a²?", a:"Se saca la raíz del número y se divide el exponente entre 2: √4a² = 2a.",
+    say:"Se saca la raíz del número y el exponente de la letra se divide entre dos. Raíz de cuatro a al cuadrado es dos a." }
+];
+
+/* =================== Tablero y mini profe =================== */
+const NS = "http://www.w3.org/2000/svg";
+const ink = $("ink"), profeG = $("profe");
+const el = (t, a, p) => { const e = document.createElementNS(NS, t); for (const k in a) e.setAttribute(k, a[k]); (p || ink).appendChild(e); return e; };
+let nodos = [], dibujoId = 0;
+function construir(lam){
+  ink.innerHTML = ""; nodos = [];
+  const todos = [...(lam.base || []).map(x => ({...x, _base:true})), ...lam.items];
+  todos.forEach((it, i) => {
+    if (it.path){
+      const p = el("path", {d:it.path, fill:it.fill || "none", "fill-opacity":0, stroke:it.color, "stroke-width":it.w, "stroke-linecap":"round", "stroke-linejoin":"round"});
+      const L = p.getTotalLength(); p.style.strokeDasharray = L; p.style.strokeDashoffset = L;
+      nodos.push({it, p, L});
+    } else if (it.eq){ // ecuación con fracciones desplegadas, se escribe de izquierda a derecha
+      const cp = el("clipPath", {id:"c" + i});
+      const r = el("rect", {x:it.x - 4, y:it.y - it.size * 1.5, width:0, height:it.size * 2.5}, cp);
+      const g = el("g", {"clip-path":`url(#c${i})`});
+      const at = {"font-family":"Kalam, cursive", fill:it.color};
+      let X = it.x;
+      it.eq.forEach(sg => {
+        if (typeof sg === "string"){ const t = el("text", {...at, x:X, y:it.y, "font-size":it.size, "xml:space":"preserve"}, g); t.textContent = sg; X += t.getComputedTextLength(); }
+        else { const fs = it.size * .82; X += it.size * .25;
+          const tn = el("text", {...at, y:it.y - it.size * .55, "font-size":fs, "text-anchor":"middle"}, g); tn.textContent = sg.n;
+          const td = el("text", {...at, y:it.y + it.size * .62, "font-size":fs, "text-anchor":"middle"}, g); td.textContent = sg.d;
+          const Lw = Math.max(tn.getComputedTextLength(), td.getComputedTextLength()) + 14;
+          tn.setAttribute("x", X + Lw / 2 + 4); td.setAttribute("x", X + Lw / 2 + 4);
+          el("line", {x1:X + 4, x2:X + 4 + Lw, y1:it.y - it.size * .3, y2:it.y - it.size * .3, stroke:it.color, "stroke-width":Math.max(2.5, it.size / 14), "stroke-linecap":"round"}, g);
+          X += Lw + 10 + it.size * .25; }
+      });
+      nodos.push({it, t:g, r, W:X - it.x + 10, eqLen:it.eq.map(sg => typeof sg === "string" ? sg : sg.n).join("").length});
+    } else {
+      const cp = el("clipPath", {id:"c" + i});
+      const r = el("rect", {x:it.x - 4, y:it.y - it.size * 1.15, width:0, height:it.size * 1.6}, cp);
+      const t = el("text", {x:it.x, y:it.y, "xml:space":"preserve", "font-family":"Kalam, cursive", "font-size":it.size, fill:it.color, "clip-path":`url(#c${i})`});
+      t.textContent = it.text; nodos.push({it, t, r, W:0});
+    }
+  });
+  nodos.forEach(n => { if (n.t && !n.it.eq) n.W = n.t.getComputedTextLength() + 10; });
+}
+function prog(n, f){
+  if (n.p){ n.p.style.strokeDashoffset = n.L * (1 - f); if (n.it.fill) n.p.setAttribute("fill-opacity", f >= 1 ? 1 : 0); const q = n.p.getPointAtLength(n.L * f); return {x:q.x, y:q.y}; }
+  n.r.setAttribute("width", n.W * f); const it = n.it;
+  return {x:it.x + n.W * f - 4, y:it.y - it.size * .28 + Math.sin(f * n.W / 9) * it.size * .12};
+}
+const dur = n => n.p ? Math.max(.35, n.L / 430) : Math.max(.5, (n.it.eq ? n.eqLen : n.it.text.length) * .07);
+
+const SKIN="#e2b48f", SKIN_D="#c9946d", SHIRT="#2f6fd0", SHIRT_D="#244f97", PANTS="#2b3340", HAIR="#231f1d";
+const P = {};
+function dibujarProfe(){
+  profeG.innerHTML = ""; const g = el("g", {}, profeG); P.root = g;
+  const b = el("g", {}, g);
+  P.legL = el("g", {}, g); P.legR = el("g", {}, g);
+  el("rect", {x:-48, y:700, width:42, height:170, rx:16, fill:PANTS}, P.legR);
+  el("ellipse", {cx:-36, cy:872, rx:34, ry:12, fill:"#15191f"}, P.legR);
+  el("rect", {x:6, y:700, width:42, height:170, rx:16, fill:"#353f4f"}, P.legL);
+  el("ellipse", {cx:16, cy:872, rx:34, ry:12, fill:"#15191f"}, P.legL);
+  el("path", {d:"M-80 505 Q-84 466 -36 458 L36 458 Q80 466 80 505 Q82 610 72 712 L-72 712 Q-82 610 -80 505 Z", fill:SHIRT}, g);
+  el("path", {d:"M-76 690 L74 690 L72 716 L-72 716 Z", fill:"#1b2330"}, g);
+  el("path", {d:"M-28 460 L-8 494 L12 460 Z", fill:"#f4f6f8"}, g);
+  el("path", {d:"M-8 494 Q-24 590 -22 684", fill:"none", stroke:SHIRT_D, "stroke-width":3}, g);
+  // brazo izquierdo: cuelga al costado, con borde para que se distinga del cuerpo
+  el("path", {d:"M62 496 Q96 560 94 660", stroke:SHIRT_D, "stroke-width":42, fill:"none", "stroke-linecap":"round"}, g);
+  el("path", {d:"M62 496 Q96 560 94 660", stroke:SHIRT, "stroke-width":34, fill:"none", "stroke-linecap":"round"}, g);
+  el("rect", {x:76, y:654, width:36, height:12, rx:5, fill:"#f4f6f8"}, g);
+  el("ellipse", {cx:94, cy:684, rx:18, ry:21, fill:SKIN, stroke:SKIN_D, "stroke-width":2.5}, g);
+  [82, 90, 98, 106].forEach((x, i) => el("ellipse", {cx:x, cy:702 + (i === 0 || i === 3 ? -3 : 0), rx:5, ry:10, fill:SKIN, stroke:SKIN_D, "stroke-width":2}, g));
+  el("ellipse", {cx:94, cy:684, rx:17, ry:17, fill:SKIN}, g);
+  el("ellipse", {cx:77, cy:688, rx:6, ry:9, fill:SKIN, stroke:SKIN_D, "stroke-width":2, transform:"rotate(25 77 688)"}, g);
+  el("rect", {x:-28, y:422, width:44, height:46, rx:14, fill:SKIN_D}, g);
+  el("ellipse", {cx:-6, cy:390, rx:62, ry:66, fill:SKIN}, g);
+  el("path", {d:"M-52 440 Q-24 462 8 446", fill:"none", stroke:SKIN_D, "stroke-width":3, "stroke-linecap":"round"}, g);
+  el("ellipse", {cx:-44, cy:414, rx:12, ry:8, fill:"#e8a07f", opacity:.55}, g);
+  el("ellipse", {cx:52, cy:396, rx:11, ry:17, fill:SKIN_D}, g);
+  el("path", {d:"M-66 392 Q-82 410 -64 420", fill:SKIN, stroke:SKIN_D, "stroke-width":3}, g);
+  el("path", {d:"M-64 372 Q-72 314 -22 314 Q-4 296 20 312 Q52 308 62 340 Q74 368 60 400 Q56 378 46 372 Q40 350 24 352 Q8 340 -8 352 Q-24 340 -38 352 Q-56 350 -64 372 Z", fill:HAIR}, g);
+  el("rect", {x:-62, y:375, width:26, height:22, rx:5, fill:"rgba(200,225,255,.35)", stroke:"#1b1b1b", "stroke-width":3.5}, g);
+  el("rect", {x:-28, y:374, width:36, height:24, rx:5, fill:"rgba(200,225,255,.35)", stroke:"#1b1b1b", "stroke-width":3.5}, g);
+  el("line", {x1:-36, y1:384, x2:-28, y2:384, stroke:"#1b1b1b", "stroke-width":3}, g);
+  el("line", {x1:8, y1:382, x2:40, y2:386, stroke:"#1b1b1b", "stroke-width":3}, g);
+  el("circle", {cx:-50, cy:387, r:3.5, fill:"#1b1b1b"}, g);
+  el("circle", {cx:-12, cy:387, r:4, fill:"#1b1b1b"}, g);
+  el("path", {d:"M-46 424 Q-28 438 -10 424", fill:"none", stroke:"#7a3b2b", "stroke-width":4, "stroke-linecap":"round"}, g);
+  el("circle", {cx:-2, cy:420, r:3, fill:SKIN_D}, g);
+  P.upO = el("line", {stroke:SHIRT_D, "stroke-width":46, "stroke-linecap":"round"}, g);
+  P.foreO = el("line", {stroke:SHIRT_D, "stroke-width":41, "stroke-linecap":"round"}, g);
+  P.up = el("line", {stroke:SHIRT, "stroke-width":38, "stroke-linecap":"round"}, g);
+  P.fore = el("line", {stroke:SHIRT, "stroke-width":33, "stroke-linecap":"round"}, g);
+  P.cuff = el("circle", {r:16, fill:"#f4f6f8"}, g);
+  P.pencil = el("line", {stroke:"#f2b705", "stroke-width":9, "stroke-linecap":"round"}, g);
+  P.tipp = el("circle", {r:4, fill:"#333"}, g);
+  P.hand = el("circle", {r:19, fill:SKIN, stroke:SKIN_D, "stroke-width":2.5}, g);
+  P.thumb = el("ellipse", {rx:9, ry:6, fill:SKIN, stroke:SKIN_D, "stroke-width":2}, g);
+  P.dedos = [0, 1, 2, 3].map(() => el("ellipse", {rx:10, ry:5, fill:SKIN, stroke:SKIN_D, "stroke-width":2}, g));
+}
+const SH = {x:-70, y:494}, L1 = 175, L2 = 165, REPOSO = 1430;
+let cx = REPOSO, paso = 0;
+function pose(tip, escribiendo){
+  P.root.setAttribute("transform", `translate(${cx},0)`);
+  const sw = Math.sin(paso) * 10;
+  P.legL.setAttribute("transform", `rotate(${sw} 20 705)`); P.legR.setAttribute("transform", `rotate(${-sw} -20 705)`);
+  const hx = escribiendo ? tip.x - cx + 20 : -86, hy = escribiendo ? tip.y + 26 : 684;
+  const dx = hx - SH.x, dy = hy - SH.y;
+  const d = Math.min(Math.max(Math.hypot(dx, dy), Math.abs(L1 - L2) + 2), L1 + L2 - 2);
+  const a = Math.atan2(dy, dx), th = Math.acos((L1 * L1 + d * d - L2 * L2) / (2 * L1 * d));
+  let ex = SH.x + L1 * Math.cos(a + th), ey = SH.y + L1 * Math.sin(a + th);
+  const ex2 = SH.x + L1 * Math.cos(a - th), ey2 = SH.y + L1 * Math.sin(a - th);
+  if (ey2 > ey){ ex = ex2; ey = ey2; }
+  if (!escribiendo){ ex = (SH.x + hx) / 2 - 18; ey = (SH.y + hy) / 2; } // en reposo el brazo cuelga casi recto
+  const r = Math.hypot(dx, dy), k = r > L1 + L2 - 2 ? (L1 + L2 - 2) / r : 1;
+  const fx = SH.x + dx * k, fy = SH.y + dy * k;
+  const set = (e, o) => { for (const q in o) e.setAttribute(q, o[q]); };
+  set(P.up, {x1:SH.x, y1:SH.y, x2:ex, y2:ey}); set(P.fore, {x1:ex, y1:ey, x2:fx, y2:fy});
+  set(P.upO, {x1:SH.x, y1:SH.y, x2:ex, y2:ey});
+  const ux = fx - ex, uy = fy - ey, ul = Math.hypot(ux, uy) || 1;
+  const wx = fx - ux / ul * 20, wy = fy - uy / ul * 20; // muñeca
+  set(P.foreO, {x1:ex, y1:ey, x2:wx, y2:wy}); set(P.fore, {x1:ex, y1:ey, x2:wx, y2:wy});
+  set(P.cuff, {cx:wx, cy:wy});
+  set(P.hand, {cx:fx, cy:fy}); set(P.thumb, {cx:fx - uy / ul * 12, cy:fy + ux / ul * 12});
+  const tx = escribiendo ? fx - 20 : fx - 6, ty = escribiendo ? fy - 26 : fy + 30;
+  set(P.pencil, {x1:fx, y1:fy, x2:tx, y2:ty}); set(P.tipp, {cx:tx, cy:ty});
+  // dedos: apuntan hacia donde va el lápiz, abiertos en abanico
+  const ang = Math.atan2(ty - fy, tx - fx), deg = ang * 180 / Math.PI;
+  P.dedos.forEach((d, i) => { const o = (i - 1.5) * 8, x = fx + Math.cos(ang) * 14 - Math.sin(ang) * o, y = fy + Math.sin(ang) * 14 + Math.cos(ang) * o;
+    set(d, {cx:x, cy:y, transform:`rotate(${deg} ${x} ${y})`}); });
+  // el lápiz y la punta quedan delante de los dedos
+  P.root.appendChild(P.pencil); P.root.appendChild(P.tipp);
+}
+const sinMov = matchMedia("(prefers-reduced-motion: reduce)").matches;
+function mostrarLamina(k, animar, alTerminar){
+  const lam = typeof k === "object" ? k : LAMINAS[k]; const id = ++dibujoId;
+  $("titulo").textContent = lam.titulo; $("pag").textContent = lam.pag;
+  construir(lam);
+  const base = nodos.filter(n => n.it._base), resto = nodos.filter(n => !n.it._base);
+  base.forEach(n => prog(n, 1));
+  if (!animar || sinMov){ resto.forEach(n => prog(n, 1)); cx = REPOSO; paso = 0; pose({x:0, y:0}, false); if (alTerminar) alTerminar(); return; }
+  resto.forEach(n => prog(n, 0));
+  let i = 0, t0 = null, fase = "camina";
+  function cuadro(ts){
+    if (id !== dibujoId) return;
+    const n = resto[i];
+    if (!n){ const v = (REPOSO - cx) * .06; cx += v; paso += Math.abs(v) * .09; pose({x:0, y:0}, false);
+      if (Math.abs(REPOSO - cx) > 1) requestAnimationFrame(cuadro); else { cx = REPOSO; paso = 0; pose({x:0, y:0}, false); if (alTerminar) alTerminar(); } return; }
+    const ini = prog(n, 0), quiere = Math.min(1440, Math.max(330, ini.x + 300));
+    if (fase === "camina"){ const v = (quiere - cx) * .1; cx += v; paso += Math.abs(v) * .09; pose(ini, true); if (Math.abs(quiere - cx) < 3){ fase = "escribe"; t0 = ts; } }
+    else { const f = Math.min(1, (ts - t0) / 1000 / dur(n)); const tip = prog(n, f);
+      const w2 = Math.min(1440, Math.max(330, tip.x + 300)); if (w2 - cx > 140){ const v = (w2 - 140 - cx) * .2; cx += v; paso += Math.abs(v) * .09; }
+      pose(tip, true); if (f >= 1){ i++; fase = "camina"; } }
+    requestAnimationFrame(cuadro);
+  }
+  requestAnimationFrame(cuadro);
+}
+
+
+/* =================== La clase (cada estudiante a su ritmo) =================== */
+let k = 0, vozOn = true, voces = [];
+const hayVoz = "speechSynthesis" in window;
+/* Voces del celular: se prefiere una voz de hombre en español; el estudiante puede escoger otra en "Voz". */
+const HOMBRES = /(raul|raúl|pablo|jorge|diego|juan|carlos|enrique|alvaro|álvaro|gonzalo|andres|andrés|tomas|tomás|jose|josé|miguel|gerardo|jaime|dario|darío|emilio|federico|hugo|alonso|lorenzo|salvador|gabriel|\bmale\b|hombre|masculin)/i;
+const MUJERES = /(female|mujer|femenin|paulina|monica|mónica|helena|laura|sabina|elvira|dalia|salome|salomé|paloma|marisol|lucia|lucía|soledad|angelica|angélica|isabel|francisca|ximena|catalina|camila|valentina|esperanza|elena|ines|inés)/i;
+let vozElegida = "";
+try { vozElegida = localStorage.getItem("niv_voz") || ""; } catch (e) {}
+function puntos(v){ const l = v.lang.replace("_", "-"); let p = 0;
+  if (HOMBRES.test(v.name)) p += 100; if (MUJERES.test(v.name)) p -= 100;
+  p += {"es-CO":8, "es-MX":7, "es-US":6, "es-419":5, "es-ES":3}[l] || 1; if (/natural|online|neural|enhanced|premium/i.test(v.name)) p += 2; return p; }
+function cargarVoces(){
+  try { voces = speechSynthesis.getVoices().filter(v => /^es/i.test(v.lang)).sort((x, y) => puntos(y) - puntos(x)); } catch (e) { voces = []; }
+  const sel = $("elegirVoz"); if (!sel) return;
+  sel.innerHTML = voces.map(v => `<option value="${v.name.replace(/"/g, "&quot;")}">${v.name.replace(/</g, "&lt;")}${HOMBRES.test(v.name) ? " (hombre)" : ""}</option>`).join("");
+  if (vozElegida && voces.some(v => v.name === vozElegida)) sel.value = vozElegida;
+  $("cajaVoz").hidden = voces.length < 2;
+}
+function vozEs(){ return voces.find(v => v.name === vozElegida) || voces[0] || null; }
+if (hayVoz){ cargarVoces(); try { speechSynthesis.onvoiceschanged = cargarVoces; } catch (e) {} setTimeout(cargarVoces, 800); }
+function hablar(texto){
+  if (!hayVoz) return;
+  try { speechSynthesis.cancel(); } catch (e) {}
+  if (!vozOn || !texto) return;
+  try { const u = new SpeechSynthesisUtterance(texto); const v = vozEs(); if (v) u.voice = v; u.lang = v ? v.lang : "es-CO"; u.rate = .95; if (!HOMBRES.test(v ? v.name : "")) u.pitch = .8; speechSynthesis.speak(u); } catch (e) {}
+}
+function ajustarSubrayado(){ try { const w = $("titulo").getComputedTextLength(); $("subraya").setAttribute("x2", 80 + Math.min(w, 1200)); } catch (e) {} }
+function mostrar(n){
+  k = n; const lam = LAMINAS[k];
+  mostrarLamina(k, true); ajustarSubrayado();
+  $("texto").textContent = lam.say; hablar(lam.say);
+  $("anterior").disabled = k <= 0; $("siguiente").disabled = k >= LAMINAS.length - 1;
+  $("repetir").disabled = false;
+  $("cajaResp").hidden = !lam.resp; $("verResp").disabled = false; $("verResp").textContent = "👀 Ver la respuesta";
+}
+$("empezar").onclick = () => { $("inicio").hidden = true; mostrar(0); };
+$("siguiente").onclick = () => { if (k < LAMINAS.length - 1) mostrar(k + 1); };
+$("anterior").onclick = () => { if (k > 0) mostrar(k - 1); };
+$("repetir").onclick = () => { const lam = LAMINAS[k]; hablar($("verResp").disabled && lam.sayResp ? lam.sayResp : lam.say); };
+$("verResp").onclick = () => {
+  const lam = LAMINAS[k]; if (!lam.resp) return;
+  $("verResp").disabled = true; $("verResp").textContent = "✔ Respuesta";
+  mostrarLamina({titulo:lam.titulo, pag:lam.pag, base:[...(lam.base || []), ...lam.items], items:lam.resp}, true);
+  $("texto").textContent = lam.sayResp; hablar(lam.sayResp);
+};
+$("voz").onclick = () => {
+  vozOn = !vozOn; $("voz").setAttribute("aria-pressed", vozOn); $("voz").textContent = vozOn ? "🔊 Voz activada" : "🔇 Voz apagada";
+  if (!vozOn){ try { speechSynthesis.cancel(); } catch (e) {} }
+};
+if (!hayVoz){ $("voz").hidden = true; $("repetir").hidden = true; }
+document.addEventListener("keydown", e => {
+  if (!$("inicio").hidden) return;
+  if (e.key === "ArrowRight" && !$("siguiente").disabled) $("siguiente").click();
+  if (e.key === "ArrowLeft" && !$("anterior").disabled) $("anterior").click();
+});
+$("elegirVoz").onchange = () => { vozElegida = $("elegirVoz").value; try { localStorage.setItem("niv_voz", vozElegida); } catch (e) {} hablar("Hola, muchachos. Así suena esta voz."); };
+/* Dudas frecuentes */
+$("listaDudas").innerHTML = DUDAS.map((d, i) => `<button type="button" data-i="${i}" aria-pressed="false">${d.q}</button>`).join("");
+$("abrirDudas").onclick = () => { const abre = $("panelDudas").hidden; $("panelDudas").hidden = !abre; $("abrirDudas").setAttribute("aria-expanded", abre); if (abre) $("panelDudas").scrollIntoView({behavior:"smooth", block:"nearest"}); };
+$("listaDudas").addEventListener("click", e => {
+  const b = e.target.closest("button[data-i]"); if (!b) return; const d = DUDAS[+b.dataset.i];
+  $("listaDudas").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
+  $("respPreg").textContent = d.q; $("respTxt").textContent = d.a; $("respDuda").hidden = false;
+  hablar(d.say || d.a);
+});
+/* Primer cuadro: la portada dibujada y el profe en reposo, listo para empezar */
+dibujarProfe(); mostrarLamina(0, false); ajustarSubrayado();
+
+</script>
+
+</body>
+</html>
