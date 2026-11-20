@@ -49,6 +49,22 @@ body{background:var(--bg); color:var(--fg); font-family:var(--font-ui); font-siz
 .dice b{display:block; font-size:.8rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); margin-bottom:4px}
 .resp{display:flex; gap:10px; flex-wrap:wrap}
 [hidden]{display:none!important}
+.soloSalon{display:none}
+body.salon .soloSalon{display:inline-block}
+body.salon #repetir{display:none}
+body.salon .btn{padding:8px 12px}
+body.salon{padding-block:8px 12px}
+body.salon .wrap{max-width:none; gap:8px}
+body.salon .tablero svg{max-height:calc(100vh - 100px); width:auto; margin:0 auto}
+body.salon .inicio{border-radius:0}
+body.salon .girar{display:none}
+body.salon .dice{display:none}
+body.salon.texto .dice{display:block}
+body.salon .cab h1{font-size:1.2rem}
+body.salon .controles{justify-content:center}
+body.salon .controles .esp{display:none}
+:fullscreen body.salon .cab{display:none}
+
 .cajaVoz{display:flex; align-items:center; gap:6px; font-weight:700; color:var(--muted); min-width:0}
 .cajaVoz select{font:inherit; font-weight:400; max-width:220px; padding:8px; border-radius:8px; border:1px solid var(--line); background:var(--panel); color:var(--fg)}
 .dudas{background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:12px 16px; display:grid; gap:10px; min-width:0}
@@ -90,6 +106,10 @@ body{background:var(--bg); color:var(--fg); font-family:var(--font-ui); font-siz
     <button class="btn" id="voz" aria-pressed="true">🔊 Voz activada</button>
     <label class="cajaVoz" id="cajaVoz" hidden>Voz <select id="elegirVoz"></select></label>
     <button class="btn" id="repetir" disabled>↻ Escuchar otra vez</button>
+    <button class="btn soloSalon" id="detener">⏹ Detener</button>
+    <button class="btn soloSalon" id="repetirLam">↺ Repetir lámina</button>
+    <button class="btn soloSalon" id="verTexto" aria-pressed="false">📝 Texto</button>
+    <button class="btn soloSalon" id="completa">⛶ Pantalla completa</button>
     <button class="btn" id="abrirDudas" aria-expanded="false" aria-controls="panelDudas">✋ Tengo una duda</button>
   </div>
   <section class="dudas" id="panelDudas" hidden aria-label="Dudas frecuentes">
@@ -442,6 +462,22 @@ $("listaDudas").addEventListener("click", e => {
   $("respPreg").textContent = d.q; $("respTxt").textContent = d.a; $("respDuda").hidden = false;
   hablar(d.say || d.a);
 });
+
+/* Modo salón (para proyectar): ?salon en el enlace */
+const SALON = /[?&]salon\b/.test(location.search);
+if (SALON){
+  document.body.classList.add("salon");
+  document.querySelectorAll(".volver").forEach(x => x.href = "index.html#salon");
+  $("detener").onclick = () => { try { speechSynthesis.cancel(); } catch (e) {} if (k >= 0 && $("inicio").hidden){ const lam = LAMINAS[k];
+      if ($("verResp").disabled && lam.resp) mostrarLamina({titulo:lam.titulo, pag:lam.pag, base:[...(lam.base || []), ...lam.items], items:lam.resp}, false); else mostrarLamina(k, false); } };
+  $("repetirLam").onclick = () => { if ($("inicio").hidden) mostrar(k); };
+  $("verTexto").onclick = () => { const on = document.body.classList.toggle("texto"); $("verTexto").setAttribute("aria-pressed", on); };
+  $("completa").onclick = () => { try { if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen(); } catch (e) {} };
+  document.addEventListener("keydown", e => {
+    if (e.key === "f" || e.key === "F") $("completa").click();
+    if (e.key === " " && $("inicio").hidden){ e.preventDefault(); $("detener").click(); }
+  });
+}
 /* Primer cuadro: la portada dibujada y el profe en reposo, listo para empezar */
 dibujarProfe(); mostrarLamina(0, false); ajustarSubrayado();
 
