@@ -191,65 +191,52 @@ const LAMINAS = [
       T("Sustitución directa · cuando da 0/0, factorizar", 120, 720, 34, GREY)],
     say:"¡Hola! Soy el profe Alirio. En esta clase vamos a aprender a calcular límites: primero reemplazando, y cuando da cero sobre cero, factorizando. Ten listo el cuaderno para copiar cada lámina." },
 
-  { pag:"Lámina 1 de 8", titulo:"Lámina 1 · ¿Qué es un límite?", items:[
-      ...LIM(120, 220, 46, "3", "(2x + 1) = ?"),
-      PA("M130 355 L560 355 M300 300 L300 640", GREY, 2),
-      T("x", 200, 335, 36, GREY), T("y = 2x + 1", 340, 335, 34, GREY),
-      T("2,9", 180, 405, 38), T("6,8", 380, 405, 38),
-      T("2,99", 170, 470, 38), T("6,98", 370, 470, 38),
-      T("3,01", 170, 535, 38), T("7,02", 370, 535, 38),
-      T("3,1", 180, 600, 38), T("7,2", 380, 600, 38),
-      T("x se acerca a 3", 680, 420, 40, BLUE),
-      T("y se acerca a 7", 680, 500, 40, GREEN),
-      ...LIM(680, 660, 48, "3", "(2x + 1) = 7", RED)],
-    say:"Lámina uno. El límite es el valor al que se acerca ye cuando equis se acerca a un número. Mira la tabla: si equis se acerca a tres, por la izquierda o por la derecha, ye se acerca a siete. Por eso decimos que el límite de dos equis más uno, cuando equis tiende a tres, es siete." },
-
-  { pag:"Lámina 2 de 8", titulo:"Lámina 2 · Sustitución directa", items:[
+  { pag:"Lámina 1 de 7", titulo:"Lámina 1 · Sustitución directa", items:[
       ...LIM(120, 230, 48, "2", "(x² + 3x − 1)"),
       T("= 2² + 3(2) − 1 = 4 + 6 − 1 = 9", 160, 340, 42, RED),
       ...LIM(120, 480, 48, "−1", "(2x³ − x + 5)"),
       T("= 2(−1)³ − (−1) + 5", 160, 590, 42),
       T("= −2 + 1 + 5 = 4", 160, 670, 46, RED),
       T("En los polinomios se reemplaza x por el número", 120, 770, 32, GREY)],
-    say:"Lámina dos. Sustitución directa. En los polinomios, el límite se saca reemplazando la equis por el número. Dos al cuadrado, cuatro; tres por dos, seis; menos uno: nueve. Ojo con los negativos: menos uno al cubo es menos uno, y menos menos uno es más uno. Queda menos dos más uno más cinco, cuatro." },
+    say:"Lámina uno. Sustitución directa. En los polinomios, el límite se saca reemplazando la equis por el número. Dos al cuadrado, cuatro; tres por dos, seis; menos uno: nueve. Ojo con los negativos: menos uno al cubo es menos uno, y menos menos uno es más uno. Queda menos dos más uno más cinco, cuatro." },
 
-  { pag:"Lámina 3 de 8", titulo:"Lámina 3 · Límite de un cociente", items:[
+  { pag:"Lámina 2 de 7", titulo:"Lámina 2 · Límite de un cociente", items:[
       ...LIM(120, 260, 50, "1", [{n:"x + 3", d:"x + 1"}]),
       EQ(["= ", {n:"1 + 3", d:"1 + 1"}, " = ", {n:"4", d:"2"}, " = 2"], 160, 460, 48, RED),
       T("Si el denominador no da 0, ese es el límite", 120, 620, 36, GREY)],
-    say:"Lámina tres. Si es una fracción, también reemplazamos arriba y abajo. Arriba, uno más tres, cuatro; abajo, uno más uno, dos. Cuatro sobre dos, dos. Mientras el denominador no dé cero, ese es el límite." },
+    say:"Lámina dos. Si es una fracción, también reemplazamos arriba y abajo. Arriba, uno más tres, cuatro; abajo, uno más uno, dos. Cuatro sobre dos, dos. Mientras el denominador no dé cero, ese es el límite." },
 
-  { pag:"Lámina 4 de 8", titulo:"Lámina 4 · Cuando da 0/0", items:[
+  { pag:"Lámina 3 de 7", titulo:"Lámina 3 · Cuando da 0/0", items:[
       ...LIM(120, 260, 50, "3", [{n:"x² − 9", d:"x − 3"}]),
       EQ(["Reemplazando:  ", {n:"9 − 9", d:"3 − 3"}, " = ", {n:"0", d:"0"}], 120, 440, 44),
       T("¡Indeterminación!", 120, 590, 52, RED),
       T("No es la respuesta: hay que factorizar", 120, 680, 38, BLUE)],
-    say:"Lámina cuatro. Si al reemplazar da cero sobre cero, eso no es la respuesta: se llama indeterminación. Nos está diciendo que hay que trabajar la expresión antes. Casi siempre se resuelve factorizando." },
+    say:"Lámina tres. Si al reemplazar da cero sobre cero, eso no es la respuesta: se llama indeterminación. Nos está diciendo que hay que trabajar la expresión antes. Casi siempre se resuelve factorizando." },
 
-  { pag:"Lámina 5 de 8", titulo:"Lámina 5 · Factorizar y simplificar", items:[
+  { pag:"Lámina 4 de 7", titulo:"Lámina 4 · Factorizar y simplificar", items:[
       EQ([{n:"x² − 9", d:"x − 3"}, " = ", {n:"(x + 3)(x − 3)", d:"x − 3"}, " = x + 3"], 120, 260, 46),
       T("diferencia de cuadrados;  se cancela (x − 3)", 140, 390, 32, GREY),
       ...LIM(120, 520, 50, "3", "(x + 3) = 3 + 3 = 6", RED)],
-    say:"Lámina cinco. Equis al cuadrado menos nueve es una diferencia de cuadrados: equis más tres por equis menos tres. Se cancela equis menos tres arriba con equis menos tres abajo, y queda equis más tres. Ahora sí reemplazamos: tres más tres, seis." },
+    say:"Lámina cuatro. Equis al cuadrado menos nueve es una diferencia de cuadrados: equis más tres por equis menos tres. Se cancela equis menos tres arriba con equis menos tres abajo, y queda equis más tres. Ahora sí reemplazamos: tres más tres, seis." },
 
-  { pag:"Lámina 6 de 8", titulo:"Lámina 6 · Otro ejemplo con trinomio", items:[
+  { pag:"Lámina 5 de 7", titulo:"Lámina 5 · Otro ejemplo con trinomio", items:[
       ...LIM(120, 240, 46, "2", [{n:"x² − 5x + 6", d:"x − 2"}]),
       T("Reemplazando da 0/0", 640, 240, 32, GREY),
       T("x² − 5x + 6 = (x − 2)(x − 3)", 120, 380, 42, BLUE),
       T("dos números que multiplicados den 6 y sumados den −5:  −2 y −3", 120, 435, 28, GREY),
       EQ([{n:"(x − 2)(x − 3)", d:"x − 2"}, " = x − 3"], 120, 560, 42),
       ...LIM(120, 720, 46, "2", "(x − 3) = 2 − 3 = −1", RED)],
-    say:"Lámina seis. Otro ejemplo. Al reemplazar, otra vez da cero sobre cero. El trinomio se factoriza buscando dos números que multiplicados den seis y sumados den menos cinco: menos dos y menos tres. Se cancela equis menos dos y queda equis menos tres. Reemplazamos: dos menos tres, menos uno." },
+    say:"Lámina cinco. Otro ejemplo. Al reemplazar, otra vez da cero sobre cero. El trinomio se factoriza buscando dos números que multiplicados den seis y sumados den menos cinco: menos dos y menos tres. Se cancela equis menos dos y queda equis menos tres. Reemplazamos: dos menos tres, menos uno." },
 
-  { pag:"Lámina 7 de 8", titulo:"Lámina 7 · Los pasos", items:[
+  { pag:"Lámina 6 de 7", titulo:"Lámina 6 · Los pasos", items:[
       T("1.  Reemplazar x por el número", 120, 220, 42),
       T("2.  Si da un número, ese es el límite", 120, 300, 42, GREEN),
       T("3.  Si da 0/0, factorizar", 120, 380, 42, RED),
       T("4.  Cancelar el factor que se repite", 120, 460, 42),
       T("5.  Volver a reemplazar", 120, 540, 42, BLUE)],
-    say:"Lámina siete. Los pasos. Siempre se empieza reemplazando. Si sale un número, listo: ese es el límite. Si sale cero sobre cero, factorizamos, cancelamos el factor que se repite y volvemos a reemplazar." },
+    say:"Lámina seis. Los pasos. Siempre se empieza reemplazando. Si sale un número, listo: ese es el límite. Si sale cero sobre cero, factorizamos, cancelamos el factor que se repite y volvemos a reemplazar." },
 
-  { pag:"Lámina 8 de 8", titulo:"Lámina 8 · Ahora tú", items:[
+  { pag:"Lámina 7 de 7", titulo:"Lámina 7 · Ahora tú", items:[
       T("a)", 100, 240, 40), ...LIM(160, 240, 44, "4", "(3x² − 2x)"),
       T("b)", 100, 390, 40), ...LIM(160, 390, 44, "5", [{n:"x² − 25", d:"x − 5"}]),
       T("c)", 100, 560, 40), ...LIM(160, 560, 44, "1", [{n:"x² + 2x − 3", d:"x − 1"}])],
@@ -259,7 +246,7 @@ const LAMINAS = [
       T("(x + 5)(x − 5) ÷ (x − 5)", 640, 440, 28, GREY),
       T("= x + 3  →  1 + 3 = 4", 640, 560, 38, RED),
       T("(x + 3)(x − 1) ÷ (x − 1)", 640, 610, 28, GREY)],
-    say:"Lámina ocho. Ahora tú. Calcula estos tres límites. Primero: el límite cuando equis tiende a cuatro de tres equis al cuadrado menos dos equis. Segundo: cuando equis tiende a cinco, de equis al cuadrado menos veinticinco, sobre equis menos cinco. Tercero: cuando equis tiende a uno, de equis al cuadrado más dos equis menos tres, sobre equis menos uno. Cuando termines, toca el botón Ver la respuesta.",
+    say:"Lámina siete. Ahora tú. Calcula estos tres límites. Primero: el límite cuando equis tiende a cuatro de tres equis al cuadrado menos dos equis. Segundo: cuando equis tiende a cinco, de equis al cuadrado menos veinticinco, sobre equis menos cinco. Tercero: cuando equis tiende a uno, de equis al cuadrado más dos equis menos tres, sobre equis menos uno. Cuando termines, toca el botón Ver la respuesta.",
     sayResp:"Revisemos. Primero: reemplazamos, tres por dieciséis, cuarenta y ocho, menos ocho, cuarenta. Segundo: da cero sobre cero; es diferencia de cuadrados, se cancela equis menos cinco y queda equis más cinco: diez. Tercero: también da cero sobre cero; se factoriza como equis más tres por equis menos uno, se cancela y queda equis más tres: cuatro. ¿Te dio igual? ¡Muy bien!" }
 ];
 const DUDAS = [

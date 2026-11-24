@@ -193,47 +193,36 @@ const LAMINAS = [
       T("Regla de la potencia · pendiente en un punto", 120, 640, 34, GREY)],
     say:"¡Hola! Soy el profe Alirio. En esta clase vamos a aprender a derivar polinomios con la regla de la potencia, y a usar la derivada para hallar la pendiente en un punto. Ten listo el cuaderno." },
 
-  { pag:"Lámina 1 de 7", titulo:"Lámina 1 · ¿Qué es la derivada?", base:plano(OD), items:[
-      curva(OD, x => x * x, -2.4, 2.4, BLUE, 5),
-      curva(OD, x => 2 * x - 1, -0.5, 3.5, RED, 4, true),
-      punto(OD, 1, 1, RED, 9), T("recta tangente", PX(OD, 2.2), PY(OD, 2.4), 28, RED),
-      T("La derivada mide cómo cambia y", 700, 260, 36),
-      T("cuando cambia x", 700, 310, 36),
-      T("Es la pendiente de la recta tangente:", 700, 410, 34, RED),
-      T("la recta que toca la curva en un punto", 700, 455, 30, RED),
-      T("Se escribe  y′  (ye prima)", 700, 570, 40, BLUE)],
-    say:"Lámina uno. La derivada nos dice qué tan rápido cambia ye cuando cambia equis. En la gráfica es la pendiente de la recta que toca la curva en un solo punto: la recta tangente. La escribimos ye prima." },
-
-  { pag:"Lámina 2 de 7", titulo:"Lámina 2 · Constante y x sola", items:[
+  { pag:"Lámina 1 de 6", titulo:"Lámina 1 · Constante y x sola", items:[
       T("y = 7   →   y′ = 0", 140, 260, 54), T("un número solo no cambia", 640, 260, 30, GREY),
       T("y = x   →   y′ = 1", 140, 400, 54),
       T("y = 5x   →   y′ = 5", 140, 540, 54), T("queda el número que acompaña a x", 640, 540, 30, GREY)],
-    say:"Lámina dos. La derivada de un número solo es cero, porque un número no cambia. La derivada de equis es uno. Y la derivada de cinco equis es cinco: el número que acompaña a la equis." },
+    say:"Lámina uno. La derivada de un número solo es cero, porque un número no cambia. La derivada de equis es uno. Y la derivada de cinco equis es cinco: el número que acompaña a la equis." },
 
-  { pag:"Lámina 3 de 7", titulo:"Lámina 3 · Regla de la potencia", items:[
+  { pag:"Lámina 2 de 6", titulo:"Lámina 2 · Regla de la potencia", items:[
       T("y = xⁿ   →   y′ = n · xⁿ⁻¹", 120, 250, 58, BLUE),
       T("El exponente baja a multiplicar y se le resta 1", 120, 340, 34, GREY),
       T("y = x³   →   y′ = 3x²", 160, 480, 52, RED),
       T("y = x⁵   →   y′ = 5x⁴", 160, 610, 52, RED)],
-    say:"Lámina tres. La regla de la potencia, la más importante. El exponente baja a multiplicar y al exponente se le resta uno. Equis al cubo: baja el tres, queda tres equis al cuadrado. Equis a la quinta: cinco equis a la cuarta." },
+    say:"Lámina dos. La regla de la potencia, la más importante. El exponente baja a multiplicar y al exponente se le resta uno. Equis al cubo: baja el tres, queda tres equis al cuadrado. Equis a la quinta: cinco equis a la cuarta." },
 
-  { pag:"Lámina 4 de 7", titulo:"Lámina 4 · Número por potencia", items:[
+  { pag:"Lámina 3 de 6", titulo:"Lámina 3 · Número por potencia", items:[
       T("y = 4x³", 140, 250, 52), T("→   y′ = 4 · 3x² = 12x²", 400, 250, 48, RED),
       T("y = −2x⁵", 140, 410, 52), T("→   y′ = −2 · 5x⁴ = −10x⁴", 400, 410, 48, RED),
       T("El número de adelante se queda", 140, 560, 38, BLUE),
       T("y se multiplica por el exponente que baja", 140, 615, 38, BLUE)],
-    say:"Lámina cuatro. Si la potencia tiene un número adelante, ese número se queda y se multiplica por el exponente que baja. Cuatro por tres, doce, y equis queda al cuadrado. Menos dos por cinco, menos diez, y equis queda a la cuarta." },
+    say:"Lámina tres. Si la potencia tiene un número adelante, ese número se queda y se multiplica por el exponente que baja. Cuatro por tres, doce, y equis queda al cuadrado. Menos dos por cinco, menos diez, y equis queda a la cuarta." },
 
-  { pag:"Lámina 5 de 7", titulo:"Lámina 5 · Un polinomio completo", items:[
+  { pag:"Lámina 4 de 6", titulo:"Lámina 4 · Un polinomio completo", items:[
       T("y = 3x⁴ − 5x² + 7x − 9", 120, 220, 52),
       T("3x⁴  →  12x³", 160, 320, 40, BLUE),
       T("−5x²  →  −10x", 160, 390, 40, BLUE),
       T("7x  →  7", 160, 460, 40, BLUE),
       T("−9  →  0  (desaparece)", 160, 530, 40, GREY),
       T("y′ = 12x³ − 10x + 7", 120, 650, 58, RED)],
-    say:"Lámina cinco. Un polinomio se deriva término por término. Tres equis a la cuarta: doce equis al cubo. Menos cinco equis al cuadrado: menos diez equis. Siete equis: siete. Y menos nueve, que es un número solo, se vuelve cero y desaparece." },
+    say:"Lámina cuatro. Un polinomio se deriva término por término. Tres equis a la cuarta: doce equis al cubo. Menos cinco equis al cuadrado: menos diez equis. Siete equis: siete. Y menos nueve, que es un número solo, se vuelve cero y desaparece." },
 
-  { pag:"Lámina 6 de 7", titulo:"Lámina 6 · La pendiente en un punto", base:plano(O6), items:[
+  { pag:"Lámina 5 de 6", titulo:"Lámina 5 · La pendiente en un punto", base:plano(O6), items:[
       T("y = x² − 4x + 1", 120, 230, 46),
       T("y′ = 2x − 4", 120, 320, 46, BLUE),
       T("Si x = 3  →  y′ = 2(3) − 4 = 2", 120, 430, 40, RED),
@@ -242,9 +231,9 @@ const LAMINAS = [
       curva(O6, x => x * x - 4 * x + 1, -0.2, 4.6, BLUE, 4),
       punto(O6, 3, -2, RED, 8),
       curva(O6, x => 2 * x - 8, 2.2, 4.6, RED, 4, true)],
-    say:"Lámina seis. Primero derivamos ye igual a equis al cuadrado menos cuatro equis más uno: ye prima es dos equis menos cuatro. Para saber la pendiente en un punto, reemplazamos en la derivada. Si equis es tres: dos por tres, seis, menos cuatro, dos. En ese punto la curva sube con pendiente dos." },
+    say:"Lámina cinco. Primero derivamos ye igual a equis al cuadrado menos cuatro equis más uno: ye prima es dos equis menos cuatro. Para saber la pendiente en un punto, reemplazamos en la derivada. Si equis es tres: dos por tres, seis, menos cuatro, dos. En ese punto la curva sube con pendiente dos." },
 
-  { pag:"Lámina 7 de 7", titulo:"Lámina 7 · Ahora tú", items:[
+  { pag:"Lámina 6 de 6", titulo:"Lámina 6 · Ahora tú", items:[
       T("a)  Deriva  y = 6x³ − 2x² + x − 8", 120, 230, 44),
       T("b)  Deriva  y = x⁴ + 3x² − 5x", 120, 330, 44),
       T("y halla la pendiente en x = 1", 175, 395, 40)],
@@ -252,7 +241,7 @@ const LAMINAS = [
       T("a)  y′ = 18x² − 4x + 1", 120, 520, 46, RED),
       T("b)  y′ = 4x³ + 6x − 5", 120, 610, 46, RED),
       T("Si x = 1  →  y′ = 4 + 6 − 5 = 5", 175, 690, 40, RED)],
-    say:"Lámina siete. Ahora tú. Primero: deriva ye igual a seis equis al cubo, menos dos equis al cuadrado, más equis, menos ocho. Segundo: deriva ye igual a equis a la cuarta, más tres equis al cuadrado, menos cinco equis, y halla la pendiente en equis igual a uno. Cuando termines, toca el botón Ver la respuesta.",
+    say:"Lámina seis. Ahora tú. Primero: deriva ye igual a seis equis al cubo, menos dos equis al cuadrado, más equis, menos ocho. Segundo: deriva ye igual a equis a la cuarta, más tres equis al cuadrado, menos cinco equis, y halla la pendiente en equis igual a uno. Cuando termines, toca el botón Ver la respuesta.",
     sayResp:"Revisemos. Primero: seis por tres, dieciocho equis al cuadrado; menos dos por dos, menos cuatro equis; equis da uno; y menos ocho desaparece. Segundo: cuatro equis al cubo, más seis equis, menos cinco. Si equis es uno: cuatro más seis menos cinco, cinco. ¿Te dio igual? ¡Muy bien!" }
 ];
 const DUDAS = [
