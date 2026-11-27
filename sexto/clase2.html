@@ -169,6 +169,8 @@ function punteada(o, xa, ya, xb, yb, color){
 }
 
 // TITULO: Competencia 2: Formulación y ejecución
+/* Enunciado del taller: aparece de una vez arriba de la lámina */
+const ENUN = (...lineas) => [...lineas.map((l, i) => T(l, 100, 200 + i * 38, 28)), PA(`M100 ${222 + (lineas.length - 1) * 38} L1290 ${222 + (lineas.length - 1) * 38}`, "#c9d3df", 2)];
 const LAMINAS = [
   { pag:"Inicio", titulo:"Competencia 2: Formulación y ejecución", items:[
       T("Nivelación · Matemáticas 6-1", 120, 250, 44, BLUE),
@@ -177,53 +179,53 @@ const LAMINAS = [
       T("m.c.m. · m.c.d. · fracciones · proporciones", 120, 600, 34, GREY)],
     say:"¡Hola, muchachos! Soy el profe Alirio. En esta clase vamos a resolver, paso a paso, los ejercicios seis al diez del taller de nivelación: la competencia de formulación y ejecución, que es resolver problemas. Tengan el taller y el cuaderno a la mano." },
 
-  { pag:"Lámina 1 de 6", titulo:"Lámina 1 · Ejercicio 6: suma y multiplicación", items:[
-      T("Planteamiento:", 110, 215, 32, BLUE), T("total = marzo + abril + mayo", 380, 215, 36),
-      T("dinero de abril = empanadas × precio", 380, 265, 36),
-      T("Desarrollo:", 110, 345, 32, BLUE),
-      T("1.250 + 980 + 1.475 = 3.705", 160, 410, 46),
-      T("980 × 2.000 = 1.960.000", 160, 490, 46),
-      T("(980 × 2 = 1.960 y se agregan los tres ceros)", 160, 540, 28, GREY),
-      T("Respuesta:", 110, 620, 32, BLUE),
-      T("Vendió 3.705 empanadas en total", 160, 680, 40, RED),
-      T("En abril recibió $1.960.000", 160, 740, 40, RED)],
-    say:"Lámina uno. Ejercicio seis. Primero el planteamiento: para el total sumamos los tres meses, y para el dinero de abril multiplicamos las empanadas de abril por el precio. Mil doscientos cincuenta, más novecientos ochenta, más mil cuatrocientos setenta y cinco, da tres mil setecientos cinco. Novecientos ochenta por dos mil: novecientos ochenta por dos, mil novecientos sesenta, y le agregamos los tres ceros: un millón novecientos sesenta mil pesos." },
+  { pag:"Lámina 1 de 6", titulo:"Lámina 1 · Ejercicio 6: suma y multiplicación", base:ENUN("Una tienda escolar vendió 1.250 empanadas en marzo, 980 en abril y 1.475 en mayo.", "¿Cuántas empanadas vendió en total? Si cada empanada se vendió a $2.000,", "¿cuánto dinero recibió por las ventas de abril?"), items:[
+      T("Planteamiento:", 110, 335, 30, BLUE), T("total = marzo + abril + mayo", 380, 335, 34),
+      T("dinero de abril = empanadas × precio", 380, 377, 34),
+      T("Desarrollo:", 110, 430, 30, BLUE),
+      T("1.250 + 980 + 1.475 = 3.705", 160, 485, 44),
+      T("980 × 2.000 = 1.960.000", 160, 550, 44),
+      T("(980 × 2 = 1.960 y se agregan los tres ceros)", 160, 590, 26, GREY),
+      T("Respuesta:", 110, 645, 30, BLUE),
+      T("Vendió 3.705 empanadas en total", 160, 700, 38, RED),
+      T("En abril recibió $1.960.000", 160, 752, 38, RED)],
+    say:"Lámina uno. Ejercicio seis: una tienda escolar vendió mil doscientas cincuenta empanadas en marzo, novecientas ochenta en abril y mil cuatrocientas setenta y cinco en mayo. ¿Cuántas vendió en total? Y si cada empanada se vendió a dos mil pesos, ¿cuánto dinero recibió en abril? Para el total sumamos los tres meses, y para el dinero de abril multiplicamos las empanadas de abril por el precio. La suma da tres mil setecientos cinco. Novecientos ochenta por dos mil: novecientos ochenta por dos, mil novecientos sesenta, y le agregamos los tres ceros: un millón novecientos sesenta mil pesos." },
 
-  { pag:"Lámina 2 de 6", titulo:"Lámina 2 · Ejercicio 7: mínimo común múltiplo", items:[
-      T("¿Cuándo vuelven a coincidir?  →  m.c.m.", 100, 220, 40, BLUE),
-      T("Múltiplos de 4:   4,  8,  12,  16,  20,  24", 140, 330, 40),
-      T("Múltiplos de 6:   6,  12,  18,  24", 140, 410, 40),
-      T("El primero que se repite es el 12", 140, 510, 38, GREEN),
-      T("m.c.m. (4, 6) = 12", 140, 600, 48, RED),
-      T("Respuesta: volverá a regarlas el mismo día dentro de 12 días", 110, 700, 32, RED)],
-    say:"Lámina dos. Ejercicio siete. Cuando algo se repite cada cierto tiempo y queremos saber cuándo coinciden, buscamos el mínimo común múltiplo. Escribimos los múltiplos de cuatro: cuatro, ocho, doce, dieciséis. Y los de seis: seis, doce, dieciocho. El primero que se repite es doce. Camila volverá a regar las dos plantas el mismo día dentro de doce días." },
+  { pag:"Lámina 2 de 6", titulo:"Lámina 2 · Ejercicio 7: mínimo común múltiplo", base:ENUN("Camila riega una planta cada 4 días y otra cada 6 días. Si hoy regó las dos,", "¿dentro de cuántos días volverá a regarlas el mismo día?"), items:[
+      T("¿Cuándo vuelven a coincidir?  →  m.c.m.", 100, 320, 38, BLUE),
+      T("Múltiplos de 4:   4,  8,  12,  16,  20,  24", 140, 410, 40),
+      T("Múltiplos de 6:   6,  12,  18,  24", 140, 480, 40),
+      T("El primero que se repite es el 12", 140, 560, 38, GREEN),
+      T("m.c.m. (4, 6) = 12", 140, 640, 48, RED),
+      T("Respuesta: volverá a regarlas el mismo día dentro de 12 días", 110, 735, 32, RED)],
+    say:"Lámina dos. Ejercicio siete: Camila riega una planta cada cuatro días y otra cada seis días; si hoy regó las dos, ¿dentro de cuántos días volverá a regarlas el mismo día? Cuando algo se repite cada cierto tiempo y queremos saber cuándo coinciden, buscamos el mínimo común múltiplo. Los múltiplos de cuatro: cuatro, ocho, doce, dieciséis. Los de seis: seis, doce, dieciocho. El primero que se repite es doce. Camila volverá a regar las dos plantas el mismo día dentro de doce días." },
 
-  { pag:"Lámina 3 de 6", titulo:"Lámina 3 · Ejercicio 8: máximo común divisor", items:[
-      T("Grupos iguales, el mayor número, sin que sobre  →  m.c.d.", 100, 210, 32, BLUE),
-      T("Divisores de 24:  1, 2, 3, 4, 6, 8, 12, 24", 130, 300, 36),
-      T("Divisores de 36:  1, 2, 3, 4, 6, 9, 12, 18, 36", 130, 370, 36),
-      T("m.c.d. (24, 36) = 12   →   12 paquetes", 130, 460, 42, GREEN),
-      T("24 ÷ 12 = 2 lápices        36 ÷ 12 = 3 borradores", 130, 545, 36),
-      T("Respuesta: 12 paquetes, cada uno con", 110, 650, 40, RED),
-      T("2 lápices y 3 borradores", 110, 705, 40, RED)],
-    say:"Lámina tres. Ejercicio ocho. Cuando hay que repartir en paquetes iguales, sin que sobre nada y con el mayor número de paquetes, buscamos el máximo común divisor. Escribimos los divisores de veinticuatro y de treinta y seis. El mayor que tienen en común es doce: se arman doce paquetes. Para saber qué lleva cada uno, dividimos: veinticuatro entre doce, dos lápices; treinta y seis entre doce, tres borradores." },
+  { pag:"Lámina 3 de 6", titulo:"Lámina 3 · Ejercicio 8: máximo común divisor", base:ENUN("Se tienen 24 lápices y 36 borradores para armar paquetes iguales, sin que sobre nada.", "Se quiere armar el mayor número posible de paquetes. ¿Cuántos paquetes se pueden", "armar? ¿Cuántos lápices y cuántos borradores lleva cada paquete?"), items:[
+      T("Grupos iguales, el mayor número, sin que sobre  →  m.c.d.", 100, 340, 30, BLUE),
+      T("Divisores de 24:  1, 2, 3, 4, 6, 8, 12, 24", 130, 405, 36),
+      T("Divisores de 36:  1, 2, 3, 4, 6, 9, 12, 18, 36", 130, 465, 36),
+      T("m.c.d. (24, 36) = 12   →   12 paquetes", 130, 540, 40, GREEN),
+      T("24 ÷ 12 = 2 lápices        36 ÷ 12 = 3 borradores", 130, 610, 36),
+      T("Respuesta: 12 paquetes, cada uno con", 110, 695, 38, RED),
+      T("2 lápices y 3 borradores", 110, 745, 38, RED)],
+    say:"Lámina tres. Ejercicio ocho: se tienen veinticuatro lápices y treinta y seis borradores para armar el mayor número de paquetes iguales, sin que sobre nada. ¿Cuántos paquetes, y qué lleva cada uno? Cuando hay que repartir en paquetes iguales, sin que sobre y con el mayor número de paquetes, buscamos el máximo común divisor. El mayor divisor que tienen en común veinticuatro y treinta y seis es doce: se arman doce paquetes. Para saber qué lleva cada uno, dividimos: veinticuatro entre doce, dos lápices; treinta y seis entre doce, tres borradores." },
 
-  { pag:"Lámina 4 de 6", titulo:"Lámina 4 · Ejercicio 9: suma y resta de fracciones", items:[
-      EQ(["Total:  ", {n:"2", d:"5"}, " + ", {n:"1", d:"5"}, " = ", {n:"3", d:"5"}], 120, 245, 46),
-      T("mismo denominador: se suman los numeradores", 150, 335, 30, GREY),
-      EQ(["Falta:  1 − ", {n:"3", d:"5"}, " = ", {n:"5", d:"5"}, " − ", {n:"3", d:"5"}, " = ", {n:"2", d:"5"}], 120, 460, 46),
-      T("el 1 se escribe como 5/5", 150, 550, 30, GREY),
-      EQ(["Respuesta: tomó ", {n:"3", d:"5"}, " de litro y le faltan ", {n:"2", d:"5"}], 110, 670, 38, RED)],
-    say:"Lámina cuatro. Ejercicio nueve. Si las fracciones tienen el mismo denominador, se suman los numeradores y el denominador se deja igual: dos quintos más un quinto, tres quintos. Para saber cuánto falta para un litro, escribimos el uno como cinco quintos y restamos: cinco quintos menos tres quintos, dos quintos. Sofía tomó tres quintos de litro y le faltan dos quintos." },
+  { pag:"Lámina 4 de 6", titulo:"Lámina 4 · Ejercicio 9: suma y resta de fracciones", base:ENUN("Sofía tomó 2/5 de litro de jugo en la mañana y 1/5 de litro en la tarde.", "¿Qué fracción de litro tomó en total? ¿Cuánto le falta para completar 1 litro?"), items:[
+      EQ(["Total:  ", {n:"2", d:"5"}, " + ", {n:"1", d:"5"}, " = ", {n:"3", d:"5"}], 120, 340, 44),
+      T("mismo denominador: se suman los numeradores", 150, 420, 30, GREY),
+      EQ(["Falta:  1 − ", {n:"3", d:"5"}, " = ", {n:"5", d:"5"}, " − ", {n:"3", d:"5"}, " = ", {n:"2", d:"5"}], 120, 525, 44),
+      T("el 1 se escribe como 5/5", 150, 605, 30, GREY),
+      EQ(["Respuesta: tomó ", {n:"3", d:"5"}, " de litro y le faltan ", {n:"2", d:"5"}], 110, 715, 36, RED)],
+    say:"Lámina cuatro. Ejercicio nueve: Sofía tomó dos quintos de litro de jugo en la mañana y un quinto en la tarde. ¿Qué fracción tomó en total, y cuánto le falta para completar un litro? Si las fracciones tienen el mismo denominador, se suman los numeradores y el denominador se deja igual: dos quintos más un quinto, tres quintos. Para saber cuánto falta, escribimos el uno como cinco quintos y restamos: cinco quintos menos tres quintos, dos quintos." },
 
-  { pag:"Lámina 5 de 6", titulo:"Lámina 5 · Ejercicio 10: proporcionalidad directa", items:[
-      T("5 cuadernos  →  $17.500", 120, 230, 46),
-      T("8 cuadernos  →  ?", 120, 310, 46),
-      T("Más cuadernos, más plata: proporcionalidad directa", 120, 400, 32, GREY),
-      T("1 cuaderno:   17.500 ÷ 5 = 3.500", 140, 500, 42, BLUE),
-      T("8 cuadernos:   3.500 × 8 = 28.000", 140, 580, 42, BLUE),
-      T("Respuesta: 8 cuadernos cuestan $28.000", 110, 690, 42, RED)],
-    say:"Lámina cinco. Ejercicio diez. Si más cuadernos cuestan más plata, en la misma proporción, es proporcionalidad directa. El camino más fácil es hallar cuánto cuesta uno: diecisiete mil quinientos entre cinco, tres mil quinientos. Y luego multiplicamos por ocho: veintiocho mil pesos." },
+  { pag:"Lámina 5 de 6", titulo:"Lámina 5 · Ejercicio 10: proporcionalidad directa", base:ENUN("En una papelería, 5 cuadernos iguales cuestan $17.500.", "¿Cuánto cuestan 8 cuadernos de los mismos?"), items:[
+      T("5 cuadernos  →  $17.500", 120, 320, 44),
+      T("8 cuadernos  →  ?", 120, 390, 44),
+      T("Más cuadernos, más plata: proporcionalidad directa", 120, 460, 32, GREY),
+      T("1 cuaderno:   17.500 ÷ 5 = 3.500", 140, 545, 42, BLUE),
+      T("8 cuadernos:   3.500 × 8 = 28.000", 140, 620, 42, BLUE),
+      T("Respuesta: 8 cuadernos cuestan $28.000", 110, 720, 42, RED)],
+    say:"Lámina cinco. Ejercicio diez: en una papelería, cinco cuadernos iguales cuestan diecisiete mil quinientos pesos. ¿Cuánto cuestan ocho? Si más cuadernos cuestan más plata, en la misma proporción, es proporcionalidad directa. El camino más fácil es hallar cuánto cuesta uno: diecisiete mil quinientos entre cinco, tres mil quinientos. Y luego multiplicamos por ocho: veintiocho mil pesos." },
 
   { pag:"Lámina 6 de 6", titulo:"Lámina 6 · Ahora ustedes", items:[
       T("a)  Un bus pasa cada 8 minutos y otro cada 12. Si acaban de", 100, 210, 30),

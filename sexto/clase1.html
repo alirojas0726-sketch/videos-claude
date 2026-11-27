@@ -170,19 +170,21 @@ function punteada(o, xa, ya, xb, yb, color){
 
 // TITULO: Competencia 1: Interpretación y representación
 function rectaOctavos(){
-  let d = "M150 380 L1150 380 ";
-  for (let i = 0; i <= 8; i++) d += `M${150 + i * 125} 362 L${150 + i * 125} 398 `;
-  const out = [PA(d, DARK, 3), T("0", 142, 440, 34), T("1", 1144, 440, 34)];
-  for (let i = 1; i < 8; i++) out.push(T(String(i), 145 + i * 125, 432, 22, GREY));
+  let d = "M150 430 L1150 430 ";
+  for (let i = 0; i <= 8; i++) d += `M${150 + i * 125} 412 L${150 + i * 125} 448 `;
+  const out = [PA(d, DARK, 3), T("0", 142, 490, 34), T("1", 1144, 490, 34)];
+  for (let i = 1; i < 8; i++) out.push(T(String(i), 145 + i * 125, 482, 22, GREY));
   return out;
 }
 const circ = (cx, cy, r, color) => PA(`M${cx - r} ${cy} a${r} ${r} 0 1 0 ${2 * r} 0 a${r} ${r} 0 1 0 ${-2 * r} 0`, color, 3, color);
 function barras(){
-  const out = [PA("M730 280 L730 700 L1290 700", DARK, 3)];
-  [2, 4, 6, 8].forEach(k => { out.push(PA(`M722 ${700 - k * 50} L738 ${700 - k * 50}`, DARK, 2)); out.push(T(String(k), 698, 708 - k * 50, 22, GREY)); });
+  const out = [PA("M730 370 L730 800 L1290 800", DARK, 3)];
+  [2, 4, 6, 8].forEach(k => { out.push(PA(`M722 ${800 - k * 50} L738 ${800 - k * 50}`, DARK, 2)); out.push(T(String(k), 698, 808 - k * 50, 22, GREY)); });
   return out;
 }
 const DEP = [["Fútbol", 8, F_AZ], ["Baloncesto", 5, F_VE], ["Voleibol", 4, F_NA], ["Patinaje", 3, F_RO]];
+/* Enunciado del taller: aparece de una vez arriba de la lámina */
+const ENUN = (...lineas) => [...lineas.map((l, i) => T(l, 100, 200 + i * 38, 28)), PA(`M100 ${222 + (lineas.length - 1) * 38} L1290 ${222 + (lineas.length - 1) * 38}`, "#c9d3df", 2)];
 const LAMINAS = [
   { pag:"Inicio", titulo:"Competencia 1: Interpretación y representación", items:[
       T("Nivelación · Matemáticas 6-1", 120, 250, 44, BLUE),
@@ -191,47 +193,47 @@ const LAMINAS = [
       T("Planteamiento · desarrollo · respuesta", 120, 600, 34, GREY)],
     say:"¡Hola, muchachos! Soy el profe Alirio. En esta clase vamos a resolver, paso a paso, los ejercicios uno al cinco del taller de nivelación: la competencia de interpretación y representación. Tengan el taller y el cuaderno a la mano." },
 
-  { pag:"Lámina 1 de 6", titulo:"Lámina 1 · Ejercicio 1: leer y descomponer", items:[
-      PA("M140 260 L820 260 M253 200 L253 335 M366 200 L366 335 M479 200 L479 335 M592 200 L592 335 M705 200 L705 335", GREY, 2),
-      ...["CM", "DM", "UM", "C", "D", "U"].map((t, i) => T(t, 172 + i * 113, 240, 30, GREY)),
-      ...["4", "0", "5", "3", "6", "0"].map((t, i) => T(t, 180 + i * 113, 315, 50, i % 3 === 0 ? BLUE : DARK)),
-      T("En letras:  cuatrocientos cinco mil trescientos sesenta", 120, 440, 34, BLUE),
-      T("Forma desarrollada:", 120, 540, 38),
-      T("400.000 + 5.000 + 300 + 60", 120, 625, 50, RED),
-      T("Los ceros no se escriben en la suma", 120, 715, 30, GREY)],
-    say:"Lámina uno. Ejercicio uno. Para leer un número grande lo separamos por el punto: a la izquierda los miles y a la derecha las unidades. Cuatrocientos cinco mil, trescientos sesenta. Para la forma desarrollada, cada cifra vale según su posición: el cuatro está en las centenas de mil y vale cuatrocientos mil; el cinco, en las unidades de mil, vale cinco mil; el tres vale trescientos y el seis vale sesenta. Los ceros no se escriben en la suma." },
+  { pag:"Lámina 1 de 6", titulo:"Lámina 1 · Ejercicio 1: leer y descomponer", base:ENUN("Escriba en letras el número 405.360. Luego escríbalo en forma desarrollada,", "como suma de los valores de sus cifras."), items:[
+      PA("M140 350 L820 350 M253 290 L253 425 M366 290 L366 425 M479 290 L479 425 M592 290 L592 425 M705 290 L705 425", GREY, 2),
+      ...["CM", "DM", "UM", "C", "D", "U"].map((t, i) => T(t, 172 + i * 113, 330, 30, GREY)),
+      ...["4", "0", "5", "3", "6", "0"].map((t, i) => T(t, 180 + i * 113, 405, 50, i % 3 === 0 ? BLUE : DARK)),
+      T("En letras:  cuatrocientos cinco mil trescientos sesenta", 120, 510, 34, BLUE),
+      T("Forma desarrollada:", 120, 590, 38),
+      T("400.000 + 5.000 + 300 + 60", 120, 670, 50, RED),
+      T("Los ceros no se escriben en la suma", 120, 745, 30, GREY)],
+    say:"Lámina uno. Ejercicio uno: escriba en letras el número cuatrocientos cinco mil trescientos sesenta, y luego en forma desarrollada, como suma de los valores de sus cifras. Para leer un número grande lo separamos por el punto: a la izquierda los miles y a la derecha las unidades. Cuatrocientos cinco mil, trescientos sesenta. Para la forma desarrollada, cada cifra vale según su posición: el cuatro está en las centenas de mil y vale cuatrocientos mil; el cinco, en las unidades de mil, vale cinco mil; el tres vale trescientos y el seis vale sesenta. Los ceros no se escriben en la suma." },
 
-  { pag:"Lámina 2 de 6", titulo:"Lámina 2 · Ejercicio 2: fracciones en la recta", items:[
+  { pag:"Lámina 2 de 6", titulo:"Lámina 2 · Ejercicio 2: fracciones en la recta", base:ENUN("Dibuje una recta numérica de 0 a 1 y divídala en 8 partes iguales.", "Ubique en ella las fracciones 3/8 y 3/4."), items:[
       ...rectaOctavos(),
-      circ(525, 380, 11, RED), EQ([{n:"3", d:"8"}], 500, 300, 38, RED),
-      circ(900, 380, 11, BLUE), EQ([{n:"3", d:"4"}], 875, 300, 38, BLUE),
-      T("Cada parte vale", 120, 560, 36), EQ([{n:"1", d:"8"}], 400, 560, 36),
-      T("3/8 → tercera marca", 600, 560, 36, RED),
-      EQ([{n:"3", d:"4"}, " = ", {n:"3 × 2", d:"4 × 2"}, " = ", {n:"6", d:"8"}, "  →  sexta marca"], 120, 700, 38, BLUE)],
-    say:"Lámina dos. Ejercicio dos. Dividimos el segmento de cero a uno en ocho partes iguales; cada parte es un octavo. Tres octavos queda en la tercera marca. Para tres cuartos, lo convertimos a octavos: multiplicamos arriba y abajo por dos y queda seis octavos. Va en la sexta marca." },
+      circ(525, 430, 11, RED), EQ([{n:"3", d:"8"}], 500, 350, 38, RED),
+      circ(900, 430, 11, BLUE), EQ([{n:"3", d:"4"}], 875, 350, 38, BLUE),
+      T("Cada parte vale", 120, 600, 36), EQ([{n:"1", d:"8"}], 400, 600, 36),
+      T("3/8 → tercera marca", 600, 600, 36, RED),
+      EQ([{n:"3", d:"4"}, " = ", {n:"3 × 2", d:"4 × 2"}, " = ", {n:"6", d:"8"}, "  →  sexta marca"], 120, 730, 38, BLUE)],
+    say:"Lámina dos. Ejercicio dos: dibuje una recta numérica de cero a uno, divídala en ocho partes iguales y ubique tres octavos y tres cuartos. Dividimos el segmento de cero a uno en ocho partes iguales; cada parte es un octavo. Tres octavos queda en la tercera marca. Para tres cuartos, lo convertimos a octavos: multiplicamos arriba y abajo por dos y queda seis octavos. Va en la sexta marca." },
 
-  { pag:"Lámina 3 de 6", titulo:"Lámina 3 · Ejercicio 3: fracción y simplificar", items:[
-      T("Planteamiento:", 120, 230, 34, BLUE), EQ(["fracción = ", {n:"fútbol", d:"total"}, " = ", {n:"12", d:"20"}], 380, 230, 40),
-      T("Desarrollo:", 120, 400, 34, BLUE), EQ([{n:"12 ÷ 4", d:"20 ÷ 4"}, " = ", {n:"3", d:"5"}], 380, 400, 42),
-      T("Respuesta:", 120, 570, 34, BLUE), EQ([{n:"3", d:"5"}, " del curso practica fútbol"], 380, 570, 42, RED)],
-    say:"Lámina tres. Ejercicio tres. La fracción es la parte sobre el total: doce estudiantes de veinte, doce veinteavos. Para simplificar buscamos un número que divida a los dos; el mayor es cuatro. Doce entre cuatro, tres; veinte entre cuatro, cinco. Quedan tres quintos del curso, y ya no se puede simplificar más." },
+  { pag:"Lámina 3 de 6", titulo:"Lámina 3 · Ejercicio 3: fracción y simplificar", base:ENUN("En un curso de 20 estudiantes, 12 practican fútbol. Escriba la fracción del curso", "que practica fútbol y simplifíquela hasta su mínima expresión."), items:[
+      T("Planteamiento:", 120, 340, 34, BLUE), EQ(["fracción = ", {n:"fútbol", d:"total"}, " = ", {n:"12", d:"20"}], 380, 340, 40),
+      T("Desarrollo:", 120, 490, 34, BLUE), EQ([{n:"12 ÷ 4", d:"20 ÷ 4"}, " = ", {n:"3", d:"5"}], 380, 490, 42),
+      T("Respuesta:", 120, 640, 34, BLUE), EQ([{n:"3", d:"5"}, " del curso practica fútbol"], 380, 640, 42, RED)],
+    say:"Lámina tres. Ejercicio tres: en un curso de veinte estudiantes, doce practican fútbol; escriba la fracción del curso que practica fútbol y simplifíquela. La fracción es la parte sobre el total: doce estudiantes de veinte, doce veinteavos. Para simplificar buscamos un número que divida a los dos; el mayor es cuatro. Doce entre cuatro, tres; veinte entre cuatro, cinco. Quedan tres quintos del curso, y ya no se puede simplificar más." },
 
-  { pag:"Lámina 4 de 6", titulo:"Lámina 4 · Ejercicio 4: fracción a decimal y ordenar", items:[
-      EQ([{n:"3", d:"4"}, " = 3 ÷ 4 = 0,75"], 120, 240, 46),
-      EQ([{n:"7", d:"10"}, " = 7 ÷ 10 = 0,7"], 120, 380, 46),
-      T("Igualar cifras:   0,70     0,75     0,65", 120, 490, 40),
-      T("65 < 70 < 75", 170, 560, 38, GREY),
-      T("Orden:  0,65 < 0,7 < 0,75", 120, 670, 50, RED)],
-    say:"Lámina cuatro. Ejercicio cuatro. Para pasar una fracción a decimal se divide el numerador entre el denominador. Tres entre cuatro, cero coma setenta y cinco. Siete entre diez, cero coma siete. Para ordenar decimales les ponemos la misma cantidad de cifras: cero coma siete es lo mismo que cero coma setenta. Comparamos sesenta y cinco, setenta y setenta y cinco, y queda: cero coma sesenta y cinco, cero coma siete y cero coma setenta y cinco." },
+  { pag:"Lámina 4 de 6", titulo:"Lámina 4 · Ejercicio 4: fracción a decimal y ordenar", base:ENUN("Escriba las fracciones 3/4 y 7/10 como números decimales.", "Luego ordene de menor a mayor los números 0,7; 0,75 y 0,65."), items:[
+      EQ([{n:"3", d:"4"}, " = 3 ÷ 4 = 0,75"], 120, 335, 46),
+      EQ([{n:"7", d:"10"}, " = 7 ÷ 10 = 0,7"], 120, 460, 46),
+      T("Igualar cifras:   0,70     0,75     0,65", 120, 565, 40),
+      T("65 < 70 < 75", 170, 625, 38, GREY),
+      T("Orden:  0,65 < 0,7 < 0,75", 120, 720, 50, RED)],
+    say:"Lámina cuatro. Ejercicio cuatro: escriba tres cuartos y siete décimos como números decimales, y ordene de menor a mayor cero coma siete, cero coma setenta y cinco y cero coma sesenta y cinco. Para pasar una fracción a decimal se divide el numerador entre el denominador. Tres entre cuatro, cero coma setenta y cinco. Siete entre diez, cero coma siete. Para ordenar decimales les ponemos la misma cantidad de cifras: cero coma siete es lo mismo que cero coma setenta. Comparamos sesenta y cinco, setenta y setenta y cinco, y queda: cero coma sesenta y cinco, cero coma siete y cero coma setenta y cinco." },
 
-  { pag:"Lámina 5 de 6", titulo:"Lámina 5 · Ejercicio 5: tabla y diagrama de barras", base:barras(), items:[
-      T("a)  Cualitativa", 110, 240, 40, BLUE), T("es una cualidad, no un número", 140, 290, 28, GREY),
-      EQ(["b)  Fútbol: ", {n:"8", d:"20"}, " = ", {n:"2", d:"5"}], 110, 420, 40, RED),
-      T("c)  Diagrama de barras", 110, 560, 38, BLUE), T("con título y ejes rotulados", 140, 610, 28, GREY),
-      T("Deporte favorito", 820, 250, 32),
-      ...DEP.flatMap(([n, v, f], i) => [PA(`M${760 + i * 130} 700 L${760 + i * 130} ${700 - v * 50} L${840 + i * 130} ${700 - v * 50} L${840 + i * 130} 700 Z`, GREY, 2, f),
-        T(String(v), 790 + i * 130, 688 - v * 50, 26), T(n, 755 + i * 130 - (n.length > 8 ? 12 : 0), 735, 20, GREY)])],
-    say:"Lámina cinco. Ejercicio cinco. Una variable es cualitativa cuando su respuesta es una palabra, como un deporte o un color, y cuantitativa cuando es un número; el deporte favorito es cualitativa. Al fútbol lo prefieren ocho de veinte: ocho veinteavos, que simplificado entre cuatro es dos quintos. Para el diagrama: en el eje horizontal van los deportes, en el vertical la cantidad de estudiantes, y cada barra sube hasta su número: ocho, cinco, cuatro y tres. No olviden el título." },
+  { pag:"Lámina 5 de 6", titulo:"Lámina 5 · Ejercicio 5: tabla y diagrama de barras", base:[...ENUN("La tabla muestra el deporte favorito de los 20 estudiantes de un curso: Fútbol 8, Baloncesto 5,", "Voleibol 4, Patinaje 3.  a) ¿Cualitativa o cuantitativa?  b) ¿Qué fracción prefiere el fútbol?", "c) Elabore el diagrama de barras."), ...barras()], items:[
+      T("a)  Cualitativa", 110, 360, 40, BLUE), T("es una cualidad, no un número", 140, 410, 28, GREY),
+      EQ(["b)  Fútbol: ", {n:"8", d:"20"}, " = ", {n:"2", d:"5"}], 110, 530, 40, RED),
+      T("c)  Diagrama de barras", 110, 660, 38, BLUE), T("con título y ejes rotulados", 140, 710, 28, GREY),
+      T("Deporte favorito", 820, 345, 30),
+      ...DEP.flatMap(([n, v, f], i) => [PA(`M${760 + i * 130} 800 L${760 + i * 130} ${800 - v * 50} L${840 + i * 130} ${800 - v * 50} L${840 + i * 130} 800 Z`, GREY, 2, f),
+        T(String(v), 790 + i * 130, 788 - v * 50, 26), T(n, 755 + i * 130 - (n.length > 8 ? 12 : 0), 832, 20, GREY)])],
+    say:"Lámina cinco. Ejercicio cinco: la tabla muestra el deporte favorito de veinte estudiantes: fútbol ocho, baloncesto cinco, voleibol cuatro y patinaje tres. Una variable es cualitativa cuando su respuesta es una palabra, como un deporte o un color, y cuantitativa cuando es un número; el deporte favorito es cualitativa. Al fútbol lo prefieren ocho de veinte: ocho veinteavos, que simplificado entre cuatro es dos quintos. Para el diagrama: en el eje horizontal van los deportes, en el vertical la cantidad de estudiantes, y cada barra sube hasta su número: ocho, cinco, cuatro y tres. No olviden el título." },
 
   { pag:"Lámina 6 de 6", titulo:"Lámina 6 · Ahora ustedes", items:[
       T("a)  Escriban en letras y en forma desarrollada:  702.450", 100, 215, 32),
