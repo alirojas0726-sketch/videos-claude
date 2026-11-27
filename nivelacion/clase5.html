@@ -34,6 +34,7 @@ body{background:var(--bg); color:var(--fg); font-family:var(--font-ui); font-siz
 .pag{color:var(--muted); font-weight:700; font-variant-numeric:tabular-nums}
 .tablero{position:relative}
 #ink text{white-space:pre}
+.tablero svg{max-height:calc(100vh - 150px)}
 .tablero svg{display:block; width:100%; height:auto; max-width:100%}
 .inicio{position:absolute; inset:0; display:grid; place-items:center; background:rgba(16,24,34,.35); border-radius:10px}
 .inicio[hidden]{display:none}
@@ -106,7 +107,7 @@ body.salon .controles .esp{display:none}
     <button class="btn" id="voz" aria-pressed="true">🔊 Voz activada</button>
     <label class="cajaVoz" id="cajaVoz" hidden>Voz <select id="elegirVoz"></select></label>
     <button class="btn" id="repetir" disabled>↻ Escuchar otra vez</button>
-    <button class="btn soloSalon" id="detener">⏹ Detener</button>
+    <button class="btn" id="detener">⏹ Detener</button>
     <button class="btn soloSalon" id="repetirLam">↺ Repetir lámina</button>
     <button class="btn soloSalon" id="verTexto" aria-pressed="false">📝 Texto</button>
     <button class="btn soloSalon" id="completa">⛶ Pantalla completa</button>
@@ -498,6 +499,8 @@ if (SALON){
     if (e.key === " " && $("inicio").hidden){ e.preventDefault(); $("detener").click(); }
   });
 }
+if (!SALON) $("detener").onclick = () => { try { speechSynthesis.cancel(); } catch (e) {} if ($("inicio").hidden){ const lam = LAMINAS[k];
+  if ($("verResp").disabled && lam.resp) mostrarLamina({titulo:lam.titulo, pag:lam.pag, base:[...(lam.base || []), ...lam.items], items:lam.resp}, false); else mostrarLamina(k, false); } };
 /* Primer cuadro: la portada dibujada y el profe en reposo, listo para empezar */
 dibujarProfe(); mostrarLamina(0, false); ajustarSubrayado();
 
